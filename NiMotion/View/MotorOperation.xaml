@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="NiMotion.View.MotorOperation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:converter="clr-namespace:NiMotion.Common"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converter:BoolToVisibilityConverter x:Key="Bool2VisibilityConverter"/>
+    </UserControl.Resources>
+    <hc:TransitioningContentControl Width="1200">
+        <Grid ShowGridLines="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <UniformGrid Grid.Row="0" Rows="1" Columns="8">
+
+                <TextBlock Margin="3" HorizontalAlignment="Center" Text="Speed mode" Style="{StaticResource TextBlockDefaultAccent}"/>
+                <UniformGrid Rows="3">
+                    <UniformGrid Columns="2" >
+                        <Label Content="EnableTimer" Height="30" FontSize="9" BorderBrush="{x:Null}" BorderThickness="0"/>
+                        <ToggleButton Height="40" Width="40" HorizontalAlignment="Left" IsChecked="{Binding IsShowTimer}"  Style="{StaticResource ToggleButtonSwitch}"/>
+                    </UniformGrid>
+                    <TextBox  Text="{Binding Timing}" Margin="0,0,10,0"  Visibility="{Binding IsShowTimer,Converter={StaticResource Bool2VisibilityConverter}}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:TitleElement.Title="Time(second)" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+                </UniformGrid>
+                <TextBox Margin="0,55,0,55" Text="{Binding MotorSpeed}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Motor speed(rad/s)" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+
+                <!--<TextBox Margin="10,55,10,55" Text="{Binding Acceleration}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Acceleration" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+
+                <TextBox Margin="10,55,10,55" Text="{Binding Deceleration}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Deceleration" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />-->
+
+                <UniformGrid Grid.Column="0" Columns="0">
+                    <UniformGrid Rows="3" Columns="1" Margin="0,20,0,10">
+                        <Label Width="140" Content="Rotation direction" Margin="-15,0,0,0" BorderBrush="{x:Null}" BorderThickness="0"></Label>
+                        <RadioButton x:Name="RBForward" IsChecked="True" Content="Forward" VerticalAlignment="Center" Padding="5" Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120" />
+                        <RadioButton x:Name="RBReverse" Content="Reverse" VerticalAlignment="Center" Padding="5"  Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120"/>
+                    </UniformGrid>
+                </UniformGrid>
+            </UniformGrid>
+
+            <UniformGrid Grid.Row="1" Rows="1" Columns="7">
+                <TextBlock Margin="3" HorizontalAlignment="Center" Text="Position mode" Style="{StaticResource TextBlockDefaultAccent}"/>
+                <TextBox Margin="-20,20,20,50" Text="{Binding Position}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Target Position(Absolute)" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+                <!--<TextBox Margin="0,20,10,50" Text="{Binding Acceleration}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Acceleration" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+
+                <TextBox Margin="10,20,20,50" Text="{Binding Deceleration}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Deceleration" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />-->
+            </UniformGrid>
+
+
+            <UniformGrid Grid.Row="2" Rows="1" Columns="9">
+                <UniformGrid Grid.Column="0" Columns="0" Margin="5, 0, 0, 0">
+                    <UniformGrid Rows="2" Columns="1">
+                        <RadioButton x:Name="RBSpeed" IsChecked="True" Content="Speed" HorizontalAlignment="Center" Padding="5" Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120"/>
+                        <RadioButton x:Name="RBPosition" Content="Position" HorizontalAlignment="Center" Padding="5"  Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120"/>
+                    </UniformGrid>
+                </UniformGrid>
+
+                <Button Name="BtnStartUp" Width ="100" Content="StartUp" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                     VerticalAlignment="Center" Click="Button_StartUp_Click"/>
+                <Button Name="BtnHold" Width="100"  Content="Hold" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                     VerticalAlignment="Center" Click="Button_Hold_Click" />
+                <Button Name="BtnOffline" Width="100" Content="Offline" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                     VerticalAlignment="Center" Click="Button_Offline_Click"/>
+                <Button Name="BtnStop" Width="100" Content="Stop" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                     VerticalAlignment="Center" Click="Button_Stop_Click"/>
+                <Button Name="BtnEmergencyStop" Width="100" Content="EmergencyStop" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                     VerticalAlignment="Center" Click="Button_EmergencyStop_Click"/>
+            </UniformGrid>
+
+        </Grid>
+    </hc:TransitioningContentControl>
+</UserControl>
