@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="NiMotion.View.MotorSetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             mc:Ignorable="d"
+             Width="900" >
+    <hc:TransitioningContentControl>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <UniformGrid  Grid.Row="0" Rows="1" Columns="1">
+                <hc:PropertyGrid hc:Name="pg" Width="500" SelectedObject="{Binding MotorSettingModel, Mode=TwoWay}"/>
+            </UniformGrid>
+            <UniformGrid Grid.Row="1" Columns="2">
+                <Button Content="ReadParams" Width="100" Click="Button_ReadParams_Click" Margin="10,20, 20, 0" HorizontalAlignment="Right"></Button>
+                <Button Content="WriteParams" Width="100" Click="Button_WriteParams_Click" Margin="20,20, 20, 0" HorizontalAlignment="Left"></Button>
+            </UniformGrid>
+            
+        </Grid>
+    </hc:TransitioningContentControl>
+</UserControl>
