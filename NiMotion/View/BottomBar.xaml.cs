@@ -39,7 +39,7 @@ namespace NiMotion.View
             motorSettingDict = NiMotionRegisterDict.GetMotorSettingKeyDict();
             motorSettingLength = NiMotionRegisterDict.GetMotorSettingLengthDict();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 5);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
         }
 

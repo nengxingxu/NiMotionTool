@@ -59,7 +59,7 @@
                 </ListBox>
             </Grid>
             <Border Grid.Column="1" Background="{DynamicResource MainContentForegroundDrawingBrush}">
-                <Grid x:Name="main_content" MinHeight="670" HorizontalAlignment="Center" VerticalAlignment="Top"  Background="{DynamicResource RegionBrush}" Margin="10,10,10,10">
+                <Grid x:Name="main_content" MinHeight="670" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{DynamicResource RegionBrush}" Margin="10,10,10,10">
                 </Grid>
             </Border>
         </Grid>

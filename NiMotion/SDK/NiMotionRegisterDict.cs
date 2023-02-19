@@ -17,7 +17,7 @@ namespace SDKDemo
                 {"DataFormat",                  0x02 },
                 {"Segmentation",                0x1A },
                 {"CurrentPosition",             0x21 },
-                {"CurrentSpeed",                0x23 },
+                {"CurrentSpeed",                0x1023 },
                 {"MotorMode",                   0x39 },
                 {"StartEnd",                    0x3A },
                 {"EmergencyStop",               0x3B },

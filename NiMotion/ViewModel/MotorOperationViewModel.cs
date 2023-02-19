@@ -23,6 +23,35 @@ namespace NiMotion.ViewModel
             set => Set(ref isShowTimer, value);
         }
 
+        public int second;
+        public int Second
+        {
+            get => second;
+            set => Set(ref second, value);
+        }
+
+        private bool isShowSpeedBar;
+        public bool IsShowSpeedBar
+        {
+            get { return isShowSpeedBar; }
+            set
+            {
+                isShowSpeedBar = value;
+                RaisePropertyChanged("IsShowSpeedBar");
+            }
+        }
+
+        private bool isShowLocationBar;
+        public bool IsShowLocationBar
+        {
+            get { return isShowLocationBar; }
+            set
+            {
+                isShowLocationBar = value;
+                RaisePropertyChanged("IsShowLocationBar");
+            }
+        }
+
         private double motorSpeed;
         public double MotorSpeed
         {

@@ -10,7 +10,7 @@
         <converter:BoolToVisibilityConverter x:Key="Bool2VisibilityConverter"/>
     </UserControl.Resources>
     <hc:TransitioningContentControl Width="1200">
-        <Grid ShowGridLines="True">
+        <Grid ShowGridLines="True" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -18,9 +18,11 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <UniformGrid Grid.Row="0" Rows="1" Columns="8">
-
-                <TextBlock Margin="3" HorizontalAlignment="Center" Text="Speed mode" Style="{StaticResource TextBlockDefaultAccent}"/>
+            <UniformGrid Grid.Row="0" Rows="1" Columns="8" >
+                <UniformGrid Rows="2">
+                    <hc:CircleProgressBar Margin="-62,0, 0, 0" Visibility="{Binding IsShowSpeedBar,Converter={StaticResource Bool2VisibilityConverter}}" HorizontalAlignment="Stretch" IsIndeterminate="True"  Width="50" Height="50"/>
+                    <TextBlock Margin="3,-2.286,2.286,44.571" HorizontalAlignment="Stretch" Text="Speed mode" Style="{StaticResource TextBlockDefaultAccent}" Height="40"/>
+                </UniformGrid>
                 <UniformGrid Rows="3">
                     <UniformGrid Columns="2" >
                         <Label Content="EnableTimer" Height="30" FontSize="9" BorderBrush="{x:Null}" BorderThickness="0"/>
@@ -28,6 +30,7 @@
                     </UniformGrid>
                     <TextBox  Text="{Binding Timing}" Margin="0,0,10,0"  Visibility="{Binding IsShowTimer,Converter={StaticResource Bool2VisibilityConverter}}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:TitleElement.Title="Time(second)" Style="{StaticResource TextBoxExtend}" 
                          hc:InfoElement.Necessary="True" />
+                    <Label Content= "{Binding Second}"  Margin="0,0,10,0" Width="130" Visibility="{Binding IsShowTimer,Converter={StaticResource Bool2VisibilityConverter}}" Style="{StaticResource LabelInfo}" Height="30" FontSize="14" />
                 </UniformGrid>
                 <TextBox Margin="0,55,0,55" Text="{Binding MotorSpeed}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Motor speed(rad/s)" Style="{StaticResource TextBoxExtend}" 
                          hc:InfoElement.Necessary="True" />
@@ -47,10 +50,22 @@
                 </UniformGrid>
             </UniformGrid>
 
-            <UniformGrid Grid.Row="1" Rows="1" Columns="7">
-                <TextBlock Margin="3" HorizontalAlignment="Center" Text="Position mode" Style="{StaticResource TextBlockDefaultAccent}"/>
-                <TextBox Margin="-20,20,20,50" Text="{Binding Position}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Target Position(Absolute)" Style="{StaticResource TextBoxExtend}" 
+            <UniformGrid Grid.Row="1" Rows="1" Columns="8">
+                <UniformGrid Rows="2">
+                    <hc:CircleProgressBar Margin="-62,0, 0, 0" Visibility="{Binding IsShowLocationBar,Converter={StaticResource Bool2VisibilityConverter}}" HorizontalAlignment="Stretch" IsIndeterminate="True"  Width="50" Height="50"/>
+                    <TextBlock Margin="3,10.429,3.286,25.143" HorizontalAlignment="Stretch"  Text="Position mode" Style="{StaticResource TextBlockDefaultAccent}" Height="29"/>
+                </UniformGrid>
+                <TextBox Margin="0,24,0,50" Text="{Binding Position}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Target Position" Style="{StaticResource TextBoxExtend}" 
                          hc:InfoElement.Necessary="True" />
+                <UniformGrid Rows="2">
+                    <CheckBox Margin="10,0,0,0" x:Name="CBOrigin" Content="Start as origin"></CheckBox>
+                    <CheckBox Margin="0,0,0,0" x:Name="CBRBZero" Content="Start as zero"></CheckBox>
+                </UniformGrid>
+                <UniformGrid Rows="3" Columns="1" Margin="0,20,0,10">
+                    <Label Width="140" Content="Location Mode" Margin="-15,0,0,0" BorderBrush="{x:Null}" BorderThickness="0"></Label>
+                    <RadioButton x:Name="RBAbsolute" IsChecked="True" Content="Absolute" VerticalAlignment="Center" Padding="5" Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120" />
+                    <RadioButton x:Name="RBRelative" Content="Relative" VerticalAlignment="Center" Padding="5"  Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120"/>
+                </UniformGrid>
                 <!--<TextBox Margin="0,20,10,50" Text="{Binding Acceleration}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="Acceleration" Style="{StaticResource TextBoxExtend}" 
                          hc:InfoElement.Necessary="True" />
 

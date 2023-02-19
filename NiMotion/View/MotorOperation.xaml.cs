@@ -31,7 +31,7 @@ namespace NiMotion.View
         [DllImport("kernel32")]
         static extern bool QueryPerformanceCounter(ref long PerformanceFrequency);
 
-        private bool IsStopTimer = true;
+        private bool IsStop = true;
         private string Section = "MotorOperation";
         private Dictionary<string, int> motorSettingDict = null;
         private Dictionary<string, int> motorSettingLength = null;
@@ -50,7 +50,12 @@ namespace NiMotion.View
             motorSettingDict = NiMotionRegisterDict.GetMotorSettingKeyDict();
             motorSettingLength = NiMotionRegisterDict.GetMotorSettingLengthDict();
             motorSegment = NiMotionRegisterDict.GetMotorSegmentDict();
-            context = new MotorOperationViewModel();
+            context = new MotorOperationViewModel()
+            {
+                IsShowSpeedBar = false,
+                IsShowLocationBar = false
+            
+            };
             IniInitialize();
             DataContext = context;
         }
@@ -70,6 +75,7 @@ namespace NiMotion.View
         {
             context.MotorSpeed = ReadFromIni("Speed", "18.0");
             context.Timing = (int)ReadFromIni("Timer", "10");
+            context.Timing = (int)ReadFromIni("Position", "10");
         }
 
         public int ReadParam(string param)
@@ -85,9 +91,8 @@ namespace NiMotion.View
 
         public int ConvertToStepSpeed(double degreesSpeed)
         {
-           // int segment = ReadParam("Segmentation");
-           // int pulseNumber = motorSegment[segment];
-           if((bool)RBForward.IsChecked)
+            // one step /s  == 0.18 degree/s
+            if ((bool)RBForward.IsChecked)
             return (int)(degreesSpeed  / 0.18 );
            else
             return -1 * (int)(degreesSpeed / 0.18);
@@ -97,28 +102,123 @@ namespace NiMotion.View
         {
             try
             {
+                context.IsShowSpeedBar = true;
                 int ret = NiMotionSDK.NiM_powerOff(context.MotorAddr);
                 if (0 != ret) throw new Exception(string.Format("Call NiM_powerOff Failed [{0}]", ret));
 
                 ret = NiMotionSDK.NiM_changeWorkMode(context.MotorAddr, NiMotionSDK.WORK_MODE.VELOCITY_MODE);
-                if (0 != ret) throw new Exception(string.Format("Call NiM_changeWorkMode Failed [{0}]", ret));
+                if (0 != ret) throw new Exception(string.Format("Call NiM_changeWorkMode VELOCITY_MODE Failed [{0}]", ret));
 
                 int speed = ConvertToStepSpeed(context.MotorSpeed);
 
                 ret = NiMotionSDK.NiM_powerOn(context.MotorAddr);
-            
-                ret = NiMotionSDK.NiM_moveVelocity(context.MotorAddr, speed);   //电机正转
+                if (0 != ret) throw new Exception(string.Format("Call NiM_powerOn Failed [{0}]", ret));
 
+                ret = NiMotionSDK.NiM_moveVelocity(context.MotorAddr, speed);
+                if (0 != ret) throw new Exception(string.Format("Call NiM_moveVelocity Failed [{0}]", ret));
             }
             catch (Exception ex)
             {
-                HandyControl.Controls.MessageBox.Show(ex.Message);
+                HandyControl.Controls.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void RunLocationMode()
+        private void RunPositionMode()
         {
-            HandyControl.Controls.MessageBox.Show("Not implemented");
+            try
+            {
+                context.IsShowLocationBar = true;
+                IsStop = false;
+                int ret = NiMotionSDK.NiM_powerOff(context.MotorAddr);
+                if (0 != ret) throw new Exception(string.Format("Call NiM_powerOff Failed [{0}]", ret));
+
+                ret = NiMotionSDK.NiM_changeWorkMode(context.MotorAddr, NiMotionSDK.WORK_MODE.POSITION_MODE);
+                if (0 != ret) throw new Exception(string.Format("Call NiM_changeWorkMode POSITION_MODE Failed [{0}]", ret));
+
+                ret = NiMotionSDK.NiM_powerOn(context.MotorAddr);
+                if (0 != ret) throw new Exception(string.Format("Call NiM_powerOn Failed [{0}]", ret));
+
+                if ((bool)CBOrigin.IsChecked)
+                {
+                    ret = NiMotionSDK.NiM_saveAsHome(context.MotorAddr);
+                    if (0 != ret) throw new Exception(string.Format("Call NiM_saveAsHome Failed [{0}]", ret));
+                }
+                if ((bool)CBRBZero.IsChecked)
+                {
+                    ret = NiMotionSDK.NiM_saveAsZero(context.MotorAddr);
+                    if (0 != ret) throw new Exception(string.Format("Call NiM_saveAsZero Failed [{0}]", ret));
+                }
+
+                int fromPosition = 0;
+                ret = NiMotionSDK.NiM_getCurrentPosition(context.MotorAddr, ref fromPosition);
+                if (0 != ret) throw new Exception(string.Format("Call NiM_getCurrentPosition Failed [{0}]", ret));
+
+                if ((bool)RBAbsolute.IsChecked)  //绝对位置
+                {
+                    ret = NiMotionSDK.NiM_moveAbsolute(context.MotorAddr, context.Position);
+                    if (0 != ret) throw new Exception(string.Format("Call NiM_moveAbsolute Failed [{0}]", ret));
+                }
+                else if ((bool)RBRelative.IsChecked) //相对位置
+                {
+                    ret = NiMotionSDK.NiM_moveRelative(context.MotorAddr, context.Position);
+                    if (0 != ret) throw new Exception(string.Format("Call NiM_moveRelative Failed [{0}]", ret));
+                }
+
+                bool isAbsolute = (bool)RBAbsolute.IsChecked;
+
+                Task.Run(() =>
+                {
+                    int pos = context.Position;
+
+                    while (true)
+                    {
+                        Thread.Sleep(200);
+                        if (IsStop)
+                        {
+                            context.IsShowLocationBar = false;
+                            return;
+                        }
+
+                        int readValue = 0;
+                        int paramId = motorSettingDict["CurrentSpeed"];
+                        int paramLength = motorSettingLength["CurrentSpeed"];
+                        ret = NiMotionSDK.NiM_readParam(context.MotorAddr, paramId, paramLength, ref readValue);
+                        if (0 != ret) return;
+                        if (0 == readValue)  // speed = 0step/s
+                        {
+                            int curPosition = 0;
+                            ret = NiMotionSDK.NiM_getCurrentPosition(context.MotorAddr, ref curPosition);
+                            int dif = 0;
+                            if (isAbsolute)
+                                dif = System.Math.Abs(curPosition - pos);
+                            else
+                                dif = System.Math.Abs(fromPosition + pos - curPosition);
+
+                            if (dif == 0)
+                            {
+                                context.IsShowLocationBar = false;
+                                IsStop = true;
+                                return;
+                            }
+
+                            if (isAbsolute)
+                            {
+                                ret = NiMotionSDK.NiM_moveAbsolute(context.MotorAddr, pos);
+                                if (0 != ret) return;
+                            } else
+                            {
+                                ret = NiMotionSDK.NiM_moveAbsolute(context.MotorAddr, fromPosition + pos);
+                                if (0 != ret) return;
+                            }
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                HandyControl.Controls.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+           // context.IsShowLocationBar = false;
         }
 
         private async void Button_StartUp_Click(object sender, RoutedEventArgs e)
@@ -127,38 +227,42 @@ namespace NiMotion.View
             {
                 WriteToIni("Speed", Convert.ToString(context.MotorSpeed));
                 WriteToIni("Timer", Convert.ToString(context.Timing));
+
+                if (!IsStop)
+                {
+                    HandyControl.Controls.MessageBox.Show("Pelase Stop motor first");
+                    return;
+                }
                 if ((bool)RBSpeed.IsChecked)
                 {
-                    if(context.IsShowTimer && !IsStopTimer)
-                    {
-                        HandyControl.Controls.MessageBox.Show("Pelase Stop motor first");
-                        return;
-                    }
-
                     RunSpeedMode();
                     if (context.IsShowTimer)
                     {
-                        IsStopTimer = false;
+                        IsStop = false;
                         await Task.Run(() =>
                         {
                             long startTime = 0;
                             long stopTime = 0;
                             long timerFrequency = 0;
+                            Context.Second = Context.Timing;
                             MotorOperation.QueryPerformanceFrequency(ref timerFrequency);
                             QueryPerformanceCounter(ref startTime);
                             while (true)
                             {
-                                Thread.Sleep(300);
+                                Thread.Sleep(200);
                                 MotorOperation.QueryPerformanceCounter(ref stopTime);
                                 double time = (double)(stopTime - startTime) / (double)(timerFrequency);
-                                if (IsStopTimer)
+                                Context.Second = context.Timing - (int)time;
+                                if (IsStop)
                                 {
+                                    context.IsShowSpeedBar = false;
                                     return;
                                 }
                                 if (time >= context.Timing)
                                 {
                                     NiMotionSDK.NiM_stop(context.MotorAddr);
-                                    IsStopTimer = true;
+                                    context.IsShowSpeedBar = false;
+                                    IsStop = true;
                                     return;
                                 }
                             }                                
@@ -167,7 +271,7 @@ namespace NiMotion.View
                 }
                 else if ((bool)RBPosition.IsChecked)
                 {
-                    RunLocationMode();
+                    RunPositionMode();
                 }
                 else
                 {
@@ -182,7 +286,7 @@ namespace NiMotion.View
                 }
                 else
                 {
-                    HandyControl.Controls.MessageBox.Show(string.Format("Motor address out of range"));
+                    HandyControl.Controls.MessageBox.Show(string.Format("Please select the motor machine number"));
                 }
             }
         }
@@ -201,7 +305,7 @@ namespace NiMotion.View
                 }
                 else
                 {
-                    HandyControl.Controls.MessageBox.Show(string.Format("Motor address out of range"));
+                    HandyControl.Controls.MessageBox.Show(string.Format("Please select the motor machine number"));
                 }
             }
         }
@@ -220,7 +324,7 @@ namespace NiMotion.View
                 }
                 else
                 {
-                    HandyControl.Controls.MessageBox.Show(string.Format("Motor address out of range"));
+                    HandyControl.Controls.MessageBox.Show(string.Format("Please select the motor machine number"));
                 }
             }
         }
@@ -230,7 +334,9 @@ namespace NiMotion.View
             if (context.IsMotorOpen && context.MotorAddr > 0 && context.MotorAddr < 249)
             {
                 NiMotionSDK.NiM_stop(context.MotorAddr);
-                IsStopTimer = true;
+                IsStop = true;
+                context.IsShowSpeedBar = false;
+                context.IsShowLocationBar = false;
             }
             else
             {
@@ -240,7 +346,7 @@ namespace NiMotion.View
                 }
                 else
                 {
-                    HandyControl.Controls.MessageBox.Show(string.Format("Motor address out of range"));
+                    HandyControl.Controls.MessageBox.Show(string.Format("Please select the motor machine number"));
                 }
             }
         }
@@ -250,7 +356,9 @@ namespace NiMotion.View
             if (context.IsMotorOpen && context.MotorAddr > 0 && context.MotorAddr < 249)
             {
                 NiMotionSDK.NiM_fastStop(context.MotorAddr);
-                IsStopTimer = true;
+                IsStop = true;
+                context.IsShowSpeedBar = false;
+                context.IsShowLocationBar = false;
             }
             else
             {
@@ -260,7 +368,7 @@ namespace NiMotion.View
                 }
                 else
                 {
-                    HandyControl.Controls.MessageBox.Show(string.Format("Motor address out of range"));
+                    HandyControl.Controls.MessageBox.Show(string.Format("Please select the motor machine number"));
                 }
             }
         }
