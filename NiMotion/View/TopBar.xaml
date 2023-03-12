@@ -7,15 +7,15 @@
              mc:Ignorable="d">
     <hc:TransitioningContentControl>
         <StackPanel Orientation="Horizontal">
-            <ComboBox Name="CmbPortNumber" Margin="5" SelectedIndex="{Binding SelectedIndex}" ItemsSource="{Binding PortList}" hc:InfoElement.Title="Serial Port" Style="{StaticResource ComboBoxExtend}"/>
-            <ComboBox Name="Cmbbaudrate" Margin="5" SelectedIndex="{Binding SelectedIndexBaud}" ItemsSource="{Binding BaudList}" hc:InfoElement.Title="Baudrate" Style="{StaticResource ComboBoxExtend}"/>
-            <Button Name="BtnOpenDevice" Margin="5" Content="Open device" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+            <ComboBox Name="CmbPortNumber" Margin="5" SelectedIndex="{Binding SelectedIndex}" ItemsSource="{Binding PortList}" hc:InfoElement.Title="{DynamicResource SerialPort}" Style="{StaticResource ComboBoxExtend}"/>
+            <ComboBox Name="Cmbbaudrate" Margin="5" SelectedIndex="{Binding SelectedIndexBaud}" ItemsSource="{Binding BaudList}" hc:InfoElement.Title="{DynamicResource SerialBaud}" Style="{StaticResource ComboBoxExtend}"/>
+            <Button Name="BtnOpenDevice" Margin="5" Content="{DynamicResource OpenDev}" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Bottom" Click="Button_Open_Click"/>
 
-            <Button Margin="5" Name="BtnCloseDevice" Content="Close device" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+            <Button Margin="5" Name="BtnCloseDevice" Content="{DynamicResource CloseDev}" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Bottom" Click="Button_Close_Click"/>
 
-            <ComboBox Name="CmbMotorAddress" Margin="5" SelectionChanged="CmbMotorNumber_SelectionChanged"  SelectedIndex="{Binding SelectedIndexolMotors}" ItemsSource="{Binding OnlineMotorsList}" hc:InfoElement.Title="Motor Address" Style="{StaticResource ComboBoxExtend}"/>
+            <ComboBox Name="CmbMotorAddress" Margin="5" SelectionChanged="CmbMotorNumber_SelectionChanged"  SelectedIndex="{Binding SelectedIndexolMotors}" ItemsSource="{Binding OnlineMotorsList}" hc:InfoElement.Title="{DynamicResource MotorAddr}" Style="{StaticResource ComboBoxExtend}"/>
 
         </StackPanel>
     </hc:TransitioningContentControl>

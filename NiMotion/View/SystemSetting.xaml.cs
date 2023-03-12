@@ -22,6 +22,9 @@ namespace NiMotion.View
     /// </summary>
     public partial class SystemSetting
     {
+        public delegate void UpdateLanguage(string language);
+        public event UpdateLanguage UpdateLanguageEvent;
+
         public SystemSetting()
         {
             InitializeComponent();
@@ -46,7 +49,10 @@ namespace NiMotion.View
 
         private void Button_Apply_Click(object sender, RoutedEventArgs e)
         {
-
+            if (SystemSettingModel.Language == SystemSettingPropertyModel.language.Chinese)
+                UpdateLanguageEvent("zh-CN");
+            else
+                UpdateLanguageEvent("en-US");
         }
 
         private void Button_Cancle_Click(object sender, RoutedEventArgs e)

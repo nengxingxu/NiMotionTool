@@ -13,6 +13,7 @@ namespace NiMotion.ViewModel
     public class MotorOperationViewModel : ViewModelBase 
     {
         public bool IsMotorOpen { get; set; }
+        public uint MotorMaster { get; set; }
         public int MotorAddr { get; set; }
 
 
@@ -23,11 +24,16 @@ namespace NiMotion.ViewModel
             set => Set(ref isShowTimer, value);
         }
 
-        public int second;
-        public int Second
+
+        private string timing;
+        public string Timing
         {
-            get => second;
-            set => Set(ref second, value);
+            get => timing;
+            set
+            {
+                timing = value;
+                RaisePropertyChanged("Timing");
+            }
         }
 
         private bool isShowSpeedBar;
@@ -96,16 +102,40 @@ namespace NiMotion.ViewModel
             }
         }
 
-        private int timing;
-        public int Timing
+        private int sec;
+        public int Sec
         {
-            get { return timing; }
+            get { return sec; }
             set
             {
-                timing = value;
-                RaisePropertyChanged("Timing");
+                sec = value;
+                RaisePropertyChanged("sec");
             }
         }
+
+        private int min;
+        public int Min
+        {
+            get { return min; }
+            set
+            {
+                min = value;
+                RaisePropertyChanged("min");
+            }
+        }
+
+        private int hour;
+        public int Hour
+        {
+            get { return hour; }
+            set
+            {
+                hour = value;
+                RaisePropertyChanged("hour");
+            }
+        }
+
+
 
         public MotorOperationViewModel()
         {

@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using SDKDemo;
+using NimServoSDK_DLL;
 
 namespace NiMotion.View
 {
@@ -29,15 +29,12 @@ namespace NiMotion.View
             get { return context; }
         }
         private BottomBarViewModel context = new BottomBarViewModel();
-        private Dictionary<string, int> motorSettingDict = null;
-        private Dictionary<string, int> motorSettingLength = null;
+
 
         public BottomBar()
         {
             InitializeComponent();
             DataContext = context;
-            motorSettingDict = NiMotionRegisterDict.GetMotorSettingKeyDict();
-            motorSettingLength = NiMotionRegisterDict.GetMotorSettingLengthDict();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
@@ -48,67 +45,78 @@ namespace NiMotion.View
         {
             try
             {
-                bool isOnline = false;
                 int readValue = 0;
-                int ret = NiMotionSDK.NiM_isMotorOnline(context.MotorAddr, ref isOnline);
-                if(0 == ret)
-                {
-                    context.Status = string.Format("Status: {0}", isOnline ? "Online":"Offline");
-                } else
-                {
-                    context.Status = string.Format("Status: Error");
-                }
+                double doValue = 0.0;
+                int ret = NimServoSDK.Nim_is_online(context.MotorMaster, context.MotorAddr);
+                context.Status = string.Format("{0}: {1}", FindResource("Status"), ret != 0 ? FindResource("Online") : FindResource("Off-line"));
 
-                int paramId = motorSettingDict["MotorMode"];
-                int paramLength = motorSettingLength["MotorMode"];      
-                ret = NiMotionSDK.NiM_readParam(context.MotorAddr, paramId, paramLength, ref readValue);
+
+                ret = NimServoSDK.Nim_get_workModeDisplay(context.MotorMaster, context.MotorAddr, ref readValue, 1);
                 if (0 == ret)
                 {
                     if (1 == readValue)
-                        context.Mode = string.Format("Mode: Position");
-                    else if (2 == readValue)
-                        context.Mode = string.Format("Mode: Speed");
+                        context.Mode = string.Format("{0}: {1}", FindResource("Mode"), FindResource("Position"));
+                    else if (3 == readValue)
+                        context.Mode = string.Format("{0}: {1}", FindResource("Mode"), FindResource("Speed"));
                     else
-                        context.Mode = string.Format("Mode: Unkown");
+                        context.Mode = string.Format("{0}: {1}", FindResource("Mode"), FindResource("Unkown"));
                 }
                 else
                 {
-                    context.Mode = string.Format("Mode: Error");
+                    context.Mode = string.Format("{0}: {1}", FindResource("Mode"), FindResource("Error"));
                 }
 
-                paramId = motorSettingDict["CurrentSpeed"];
-                paramLength = motorSettingLength["CurrentSpeed"];
-                ret = NiMotionSDK.NiM_readParam(context.MotorAddr, paramId, paramLength, ref readValue);
+                ret = NimServoSDK.Nim_get_currentMotorSpeed(context.MotorMaster, context.MotorAddr, ref readValue, 1);
                 if (0 == ret)
-                    context.Speed = string.Format("Speed: {0} step/s", readValue);
+                {
+                    // convert rpm to rad/s
+                    int rads = readValue * 360 / 60 / 10;
+                    context.Speed = string.Format("{0}: {1} rad/s2", FindResource("Speed"), rads);
+                }
                 else
+                {
                     context.Speed = string.Format("Speed: Error");
+                }
 
-                paramId = motorSettingDict["Acceleration"];
-                paramLength = motorSettingLength["Acceleration"];
-                ret = NiMotionSDK.NiM_readParam(context.MotorAddr, paramId, paramLength, ref readValue);
+                ret = NimServoSDK.Nim_get_profileAccel(context.MotorMaster, context.MotorAddr, ref doValue);
                 if (0 == ret)
-                    context.Acceleration = string.Format("Acceleration: {0} step/s2", readValue);
+                {
+                    // convert rpm to rad/s
+                    double rads = doValue / 10000 * 60  * 360 / 60 / 10;
+                    context.Acceleration = string.Format("{0}: {1} rad/s2", FindResource("Acceleration"), doValue);
+                }
                 else
-                    context.Acceleration = string.Format("Acceleration: Error");
+                {
+                    context.Acceleration = string.Format("{0}: {1}", FindResource("Acceleration"), FindResource("Error"));
+                }
 
-                paramId = motorSettingDict["Deceleration"];
-                paramLength = motorSettingLength["Deceleration"];
-                ret = NiMotionSDK.NiM_readParam(context.MotorAddr, paramId, paramLength, ref readValue);
+                ret = NimServoSDK.Nim_get_profileDecel(context.MotorMaster, context.MotorAddr, ref doValue);
                 if (0 == ret)
-                    context.Deceleration = string.Format("Deceleration: {0} step/s2", readValue);
+                {
+                    // convert rpm to rad/s
+                    double rads = doValue / 10000 * 60 * 360 / 60 / 10;
+                    context.Deceleration = string.Format("{0}: {1} rad/s2", FindResource("Deceleration"), doValue);
+                }
                 else
-                    context.Deceleration = string.Format("Deceleration: Error");
+                {
+                    context.Deceleration = string.Format("{0}: {1}", FindResource("Deceleration"), FindResource("Error"));
+                }
 
-                ret = NiMotionSDK.NiM_getCurrentPosition(context.MotorAddr, ref readValue);
-                if (0 == ret)
-                    context.Position = string.Format("Position: {0} ", readValue);
-                else
-                    context.Position = string.Format("Position: Error");
+                ret = NimServoSDK.Nim_get_currentPosition(context.MotorMaster, context.MotorAddr, ref doValue, 1);
+                {
+                    if (0 == ret)
+                    {
+                        context.Position = string.Format("{0}: {1}", FindResource("Position"), doValue);
+                    }
+                    else
+                    {
+                        context.Position = string.Format("{0}: {1}", FindResource("Position"), FindResource("Error"));
+                    }
+                }
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -120,12 +128,12 @@ namespace NiMotion.View
             }
             else
             {
-                context.Status = "Status: Offline";
-                context.Mode = "Mode:    ";
-                context.Speed = "Speed:    step/s";
-                context.Acceleration = "Acceleration:    step/s2";
-                context.Deceleration = "Deceleration:    step/s2";
-                context.Position = "Position: ";
+                context.Status = string.Format("{0}: {1}", FindResource("Status"), FindResource("Offline"));
+                context.Mode = string.Format("{0}: ", FindResource("Mode"));
+                context.Speed = string.Format("{0}: rad/s2", FindResource("Speed"));
+                context.Acceleration = string.Format("{0}: rad/s2", FindResource("Acceleration"));
+                context.Deceleration = string.Format("{0}: rad/s2", FindResource("Deceleration"));
+                context.Position = string.Format("{0}: ", FindResource("Position"));
             }
         }
         private void dispatcherTimer_Tick(object sender, EventArgs e)

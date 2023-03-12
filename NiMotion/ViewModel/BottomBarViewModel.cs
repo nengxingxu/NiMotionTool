@@ -12,6 +12,7 @@ namespace NiMotion.ViewModel
     public class BottomBarViewModel : ViewModelBase
     {
         public bool IsMotorOpen { get; set; }
+        public uint MotorMaster { get; set; }
         public int MotorAddr { get; set; }
 
         private string status;

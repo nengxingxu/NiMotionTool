@@ -16,8 +16,8 @@
                 <hc:PropertyGrid Width="500" SelectedObject="{Binding SystemSettingModel}"/>
             </UniformGrid>
             <UniformGrid Grid.Row="1" Columns="2">
-                <Button Content="Cancle" Width="100" Click="Button_Cancle_Click" Margin="10,20, 20, 0" HorizontalAlignment="Right"></Button>
-                <Button Content="Apply" Width="100" Click="Button_Apply_Click" Margin="20,20, 20, 0" HorizontalAlignment="Left"></Button>
+                <Button Content="{DynamicResource Cancel}" Width="100" Click="Button_Cancle_Click" Margin="10,20, 20, 0" HorizontalAlignment="Right"></Button>
+                <Button Content="{DynamicResource Apply}" Width="100" Click="Button_Apply_Click" Margin="20,20, 20, 0" HorizontalAlignment="Left"></Button>
             </UniformGrid>
 
         </Grid>

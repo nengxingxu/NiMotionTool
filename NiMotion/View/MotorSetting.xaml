@@ -16,8 +16,8 @@
                 <hc:PropertyGrid hc:Name="pg" Width="500" SelectedObject="{Binding MotorSettingModel, Mode=TwoWay}"/>
             </UniformGrid>
             <UniformGrid Grid.Row="1" Columns="2">
-                <Button Content="ReadParams" Width="100" Click="Button_ReadParams_Click" Margin="10,20, 20, 0" HorizontalAlignment="Right"></Button>
-                <Button Content="WriteParams" Width="100" Click="Button_WriteParams_Click" Margin="20,20, 20, 0" HorizontalAlignment="Left"></Button>
+                <Button Content="{DynamicResource ReadParams}" Width="100" Click="Button_ReadParams_Click" Margin="10,20, 20, 0" HorizontalAlignment="Right"></Button>
+                <Button Content="{DynamicResource WriteParams}" Width="100" Click="Button_WriteParams_Click" Margin="20,20, 20, 0" HorizontalAlignment="Left"></Button>
             </UniformGrid>
             
         </Grid>

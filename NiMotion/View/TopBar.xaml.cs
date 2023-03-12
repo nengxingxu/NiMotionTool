@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using SDKDemo;
+using NimServoSDK_DLL;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -25,11 +25,15 @@ namespace NiMotion.View
     {
         private bool motorOpen = false;
         private TopBarViewModel context;
+        private uint hMaster = 0;
+        private int motorAddr = 0;
 
         public delegate void UpdateMotorStatus(bool motorOpen);
+        public delegate void UpdateMotorMaster(uint master);
         public delegate void UpdateMotorNumber(int num);
 
         public event UpdateMotorStatus MotorStatusEvent;
+        public event UpdateMotorMaster MotorMasterEvent;
         public event UpdateMotorNumber MotorNumberEvent;
 
         public TopBar()
@@ -48,35 +52,47 @@ namespace NiMotion.View
             {
                 if (context.PortList.Count() <= 0)
                 {
-                    MessageBox.Show("No serial port exist", "error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show((string)FindResource("msg4"), "error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                string StrConnectMsg = "{\"DeviceName\": \"" + context.PortNum + "\", \"Baudrate\":" + context.BaudRate + ", \"Parity\": \"None\", \"DataBits\": 8, \"StopBits\": 1}";
-                int ret = NiMotionSDK.NiM_openDevice(0, StrConnectMsg);
-                if (0 != ret) throw new Exception("Call NiM_openDevice Failed");
-                isOpenDevice = true;
 
-                ret = NiMotionSDK.NiM_scanMotors(1, 10);
-                if (0 != ret) throw new Exception("Call NiM_scanMotors Failed");
+                int ret = NimServoSDK.Nim_init(@"C:\Users\titimask\Desktop\NiMotionTool\NiMotion\bin\");
+                if (0 != ret) throw new Exception("Nim_init Failed");
 
-                int count = 0;
-                IntPtr hglobal = Marshal.AllocHGlobal(100 * 4);
+                ret = NimServoSDK.Nim_create_master(2, ref hMaster);
+                if(0 != ret) throw new Exception("Nim_create_master Failed");
 
-                ret = NiMotionSDK.NiM_getOnlineMotors(hglobal, ref count);
-                if (0 != ret) throw new Exception("Call NiM_scanMotors Failed");
+                string StrConnectMsg = "{\"SerialPort\": \"" + context.PortNum + "\", \"Baudrate\": " + context.BaudRate + ","
+                                               + " \"Parity\": \"N\", \"DataBits\": 8, \"StopBits\": 1,"
+                                               + " \"PDOIntervalMS\": 10, \"SyncIntervalMS\": 0}";
 
+                ret = NimServoSDK.Nim_master_run(hMaster, StrConnectMsg);
+                if (0 != ret) throw new Exception("Nim_master_run Failed");
                 int[] ptrArray = new int[100];
-                Array.Clear(ptrArray, 0, ptrArray.Length);
-                Marshal.Copy(hglobal, ptrArray, 0, count);
+                int count = 0;
+                NimServoSDK.Nim_scan_nodes(hMaster, 1, 10);
+                for (int i = 0; i < 10; i++)
+                {
+                    if (0 != NimServoSDK.Nim_is_online(hMaster, i))
+                    {
+                        ptrArray[count] = i;
+                        count++;
+                    }
+                }
+                ret = NimServoSDK.Nim_set_param_value(hMaster, 1, "H6063", 0, 1);
+                MotorMasterEvent(hMaster);
                 context.UpdateOnlineMotors(ptrArray, count);
-                Marshal.FreeHGlobal(hglobal);
                 BtnCloseDevice.IsEnabled = true;
                 BtnOpenDevice.IsEnabled = false;
                 motorOpen = true;
             }
             catch (Exception ex)
             {
-                if(isOpenDevice) NiMotionSDK.NiM_closeDevice();
+                if (isOpenDevice)
+                {
+                    NimServoSDK.Nim_master_stop(hMaster);
+                    NimServoSDK.Nim_destroy_master(hMaster);
+                }
                 motorOpen = false;
                 MessageBox.Show(ex.Message);
             }
@@ -87,11 +103,25 @@ namespace NiMotion.View
         {
             if (motorOpen)
             {
-                int ret = NiMotionSDK.NiM_closeDevice();
+                try
+                {
+                    int ret = NimServoSDK.Nim_master_stop(hMaster);
+                    if (ret != 0) throw new Exception("Nim_master_stop Failed");
+                    ret = NimServoSDK.Nim_destroy_master(hMaster);
+                    if (ret != 0) throw new Exception("Nim_destroy_master Failed");
+                    NimServoSDK.Nim_clean();
+                }
+                catch(Exception ex)
+                {
+                    motorOpen = false;
+                    MessageBox.Show(ex.Message);
+                }
+
                 BtnOpenDevice.IsEnabled = true;
                 BtnCloseDevice.IsEnabled = false;
                 motorOpen = false;
                 context.UpdateOnlineMotors(new int[0], 0);
+                MotorMasterEvent(0);
                 MotorStatusEvent(motorOpen);
             }
         }
@@ -106,6 +136,26 @@ namespace NiMotion.View
             {
                 int num = Convert.ToInt32(cmb.SelectedItem.ToString());
                 if (num >= 0) MotorNumberEvent(num);
+                motorAddr = num;
+                if(motorAddr > 0)
+                {
+                    try
+                    {
+                        int ret = NimServoSDK.Nim_load_params(hMaster, motorAddr, "BLMxx_modbus_zh.db");
+                        if (0 != ret) throw new Exception("Nim_load_params Failed");
+
+                        // 读取电机PDO配置
+                        ret = NimServoSDK.Nim_read_PDOConfig(hMaster, motorAddr);
+                        if (0 != ret) throw new Exception("Nim_load_params Failed");
+
+                        ret = NimServoSDK.Nim_set_unitsFactor(hMaster, motorAddr, 1);
+                        if (0 != ret) throw new Exception("Nim_set_unitsFactor Failed");
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
             }
             else
             {
