@@ -165,19 +165,41 @@ namespace NiMotion.View
                 if (0 != ret) throw new Exception(string.Format("Call Nim_set_workMode VELOCITY_MODE Failed [{0}]", ret));
                 Thread.Sleep(200);
 
-                ret = NimServoSDK.Nim_power_off(context.MotorMaster, context.MotorAddr, 1);
+                if ((bool)CBOrigin.IsChecked)
+                {
+                    ret = NimServoSDK.Nim_set_param_value(context.MotorMaster, context.MotorAddr, "I2017-1", 33,  1);
+                    Thread.Sleep(200);
+                    ret = NimServoSDK.Nim_set_param_value(context.MotorMaster, context.MotorAddr, "I2017-2", 0, 1);
+                    Thread.Sleep(200);
+                }
+
+                ret = NimServoSDK.Nim_power_on(context.MotorMaster, context.MotorAddr, 1);
                 if (0 != ret) throw new Exception(string.Format("Call NiM_powerOn Failed [{0}]", ret));
+
+                Thread.Sleep(200);
 
                 if ((bool)CBOrigin.IsChecked)
                 {
-                   
+                    ret = NimServoSDK.Nim_set_param_value(context.MotorMaster, context.MotorAddr, "I2031-1", 0, 1);
+                    Thread.Sleep(200);
+                    ret = NimServoSDK.Nim_set_param_value(context.MotorMaster, context.MotorAddr, "I2031-1", 1, 1);
+                } else
+                {
+                    ret = NimServoSDK.Nim_set_param_value(context.MotorMaster, context.MotorAddr, "I2031-1", 0, 1);
                 }
-            
+
+
+                ret = NimServoSDK.Nim_power_off(context.MotorMaster, context.MotorAddr, 1);
+                if (0 != ret) throw new Exception(string.Format("Call NiM_powerOff Failed [{0}]", ret));
+                Thread.Sleep(200);
+                ret = NimServoSDK.Nim_power_on(context.MotorMaster, context.MotorAddr, 1);
+                if (0 != ret) throw new Exception(string.Format("Call NiM_powerOn Failed [{0}]", ret));
+
 
                 double fromPosition = 0;
                 ret = NimServoSDK.Nim_get_currentPosition(context.MotorMaster, context.MotorAddr, ref fromPosition, 1);
                 if (0 != ret) throw new Exception(string.Format("Call NiM_getCurrentPosition Failed [{0}]", ret));
-
+                Thread.Sleep(200);
                 if ((bool)RBAbsolute.IsChecked)  //绝对位置
                 {
                     ret = NimServoSDK.Nim_moveAbsolute(context.MotorMaster, context.MotorAddr, (double)context.Position, 0, 1);
@@ -185,12 +207,11 @@ namespace NiMotion.View
                 }
                 else if ((bool)RBRelative.IsChecked) //相对位置
                 {
-                    ret = NimServoSDK.Nim_moveRelative(context.MotorMaster, context.MotorAddr, (double)context.Position, 0, 1);
+                    ret = NimServoSDK.Nim_moveRelative(context.MotorMaster, context.MotorAddr, (double)context.Position, 1, 1);
                     if (0 != ret) throw new Exception(string.Format("Call NiM_moveRelative Failed [{0}]", ret));
                 }
-
+                Thread.Sleep(200);
                 bool isAbsolute = (bool)RBAbsolute.IsChecked;
-
                 Task.Run(() =>
                 {
                     int pos = context.Position;
@@ -211,7 +232,7 @@ namespace NiMotion.View
                         if (0 == readValue)  // speed = 0step/s
                         {
                             double curPosition = 0;
-                            ret = NimServoSDK.Nim_get_currentPosition(context.MotorMaster, context.MotorAddr, ref fromPosition, 1);
+                            ret = NimServoSDK.Nim_get_currentPosition(context.MotorMaster, context.MotorAddr, ref curPosition, 1);
                             if (0 != ret) return;
                             double dif = 0;
                             if (isAbsolute)
@@ -233,7 +254,7 @@ namespace NiMotion.View
                             }
                             else
                             {
-                                ret = NimServoSDK.Nim_moveRelative(context.MotorMaster, context.MotorAddr, fromPosition + pos, 0, 1);
+                                ret = NimServoSDK.Nim_moveAbsolute(context.MotorMaster, context.MotorAddr, fromPosition + pos, 0, 1);
                                 if (0 != ret) return;
                             }
                         }

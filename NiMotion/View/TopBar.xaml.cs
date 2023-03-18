@@ -79,8 +79,8 @@ namespace NiMotion.View
                         count++;
                     }
                 }
-                ret = NimServoSDK.Nim_set_param_value(hMaster, 1, "H6063", 0, 1);
-                MotorMasterEvent(hMaster);
+                //ret = NimServoSDK.Nim_set_param_value(hMaster, 1, "H6063", 0, 1);
+                //MotorMasterEvent(hMaster);
                 context.UpdateOnlineMotors(ptrArray, count);
                 BtnCloseDevice.IsEnabled = true;
                 BtnOpenDevice.IsEnabled = false;
