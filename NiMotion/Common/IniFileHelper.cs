@@ -14,10 +14,7 @@ namespace NiMotion.Common
         {
             string strAppPath = AppDomain.CurrentDomain.BaseDirectory;
             string strFile = strAppPath +"\\" + strRes;
-            if (File.Exists(strFile))
-                return strFile;             
-            else
-                throw new Exception("Find resurce error" + strRes);
+            return strFile;                    
         }
 
         public static string IniValue(string Section, string IniKey)

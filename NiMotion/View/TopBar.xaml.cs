@@ -56,7 +56,8 @@ namespace NiMotion.View
                     return;
                 }
 
-                int ret = NimServoSDK.Nim_init(@"C:\Users\titimask\Desktop\NiMotionTool\NiMotion\bin\");
+                string path = System.Environment.CurrentDirectory;
+                int ret = NimServoSDK.Nim_init(path);
                 if (0 != ret) throw new Exception("Nim_init Failed");
 
                 ret = NimServoSDK.Nim_create_master(2, ref hMaster);

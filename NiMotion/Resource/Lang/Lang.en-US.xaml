@@ -48,7 +48,7 @@
 
 
     <system:String x:Key="PositionMode">Position mode</system:String>
-    <system:String x:Key="TargetPosition">TargetPosition</system:String>
+    <system:String x:Key="TargetPosition">TargetPosition(circle)</system:String>
     <system:String x:Key="LocationMode">Location Mode</system:String>
     <system:String x:Key="RBAbsolute">Absolute</system:String>
     <system:String x:Key="RBRelative">Relative</system:String>

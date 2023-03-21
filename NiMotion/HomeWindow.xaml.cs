@@ -40,13 +40,13 @@ namespace NiMotion
             InitializeComponent();
             InitialResourceDictionary();
             InitialDelegate();
-
             Dictionary<string, string> name_dict = new Dictionary<string, string>();
             name_dict.Add("MotorOperation", (string)FindResource("MotorOperation"));
             name_dict.Add("MotorSetting", (string)FindResource("MotorSetting"));
             name_dict.Add("SystemSetting", (string)FindResource("SystemSetting"));
             context = new HomeWindowViewModel(name_dict);
             DataContext = context;
+            systemSetting.UpdateSettings();
         }
 
         // Ititial ResourceDictionary
@@ -72,6 +72,7 @@ namespace NiMotion
             topBar.MotorNumberEvent += UpdateMotorNumber;
             topBar.MotorMasterEvent += UpdateMotorMaster;
             systemSetting.UpdateLanguageEvent += UpdateLanguage;
+            systemSetting.UpdateThemeEvent += UpdateTheme;
 
         }
 
@@ -149,6 +150,33 @@ namespace NiMotion
             App.Language = language;
             System.Threading.Thread.Sleep(100);
             UpdataLanguage(language);
+        }
+
+
+        // Updata ResourceDictionary
+        private void UpdataResourceDictionary(string resourceStr, int pos)
+        {
+            if (pos < 0 || pos > 2)
+            {
+                return;
+            }
+            ResourceDictionary resource = new ResourceDictionary
+            {
+                Source = new Uri(resourceStr)
+            };
+            Resources.MergedDictionaries.RemoveAt(pos);
+            Resources.MergedDictionaries.Insert(pos, resource);
+        }
+
+        private void UpdateTheme(string theme)
+        {
+            string resourceStr = "pack://application:,,,/Resource/Style/Theme/BaseLight.xaml";
+            if (theme == "Dark")
+            {
+                resourceStr = "pack://application:,,,/Resource/Style/Theme/BaseDark.xaml";
+            }
+            UpdataResourceDictionary(resourceStr, 0);
+
         }
     }
 }

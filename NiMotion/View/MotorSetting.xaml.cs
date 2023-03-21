@@ -57,8 +57,6 @@ namespace NiMotion.View
 
         private uint ReadParamFromIni(string param, string def)
         {
-            int paramId = motorSettingDict[param];
-            int paramLength = motorSettingLength[param];
             string readValue = IniFileHelper.IniValue(Section, param, def);
             return Convert.ToUInt32(readValue);
         }
@@ -66,12 +64,12 @@ namespace NiMotion.View
         private void MotorParamsInit()
         {
 
-            MotorSettingModel.MaxSpeed = 250; // ReadParamFromIni("MaxSpeed", "250");
-            MotorSettingModel.MinSpeed = 0; // ReadParamFromIni("MinSpeed", "1");
-            MotorSettingModel.Acceleration = 2000; // ReadParamFromIni("Acceleration", "2000");
-            MotorSettingModel.Deceleration = 2000; // ReadParamFromIni("Deceleration", "2000");
-            MotorSettingModel.MaxAcceleration = 2000;  // ReadParamFromIni("MaxAcceleration", "2000");
-            MotorSettingModel.MaxDeceleration = 2000; // ReadParamFromIni("MaxDeceleration", "2000");
+            MotorSettingModel.MaxSpeed = ReadParamFromIni("MaxSpeed", "250");
+            MotorSettingModel.MinSpeed = ReadParamFromIni("MinSpeed", "1");
+            MotorSettingModel.Acceleration =  ReadParamFromIni("Acceleration", "2000");
+            MotorSettingModel.Deceleration =  ReadParamFromIni("Deceleration", "2000");
+            MotorSettingModel.MaxAcceleration =  ReadParamFromIni("MaxAcceleration", "2000");
+            MotorSettingModel.MaxDeceleration =  ReadParamFromIni("MaxDeceleration", "2000");
         }
 
         public void WriteMotorParam(string param, uint value)

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NiMotion.Common;
 
 namespace NiMotion.View
 {
@@ -24,6 +25,8 @@ namespace NiMotion.View
     {
         public delegate void UpdateLanguage(string language);
         public event UpdateLanguage UpdateLanguageEvent;
+        public delegate void UpdateTheme(string theme);
+        public event UpdateTheme UpdateThemeEvent;
 
         public SystemSetting()
         {
@@ -35,7 +38,7 @@ namespace NiMotion.View
                 
             };
             DataContext = this;
-
+            ReadIni();
         }
 
         public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(
@@ -49,15 +52,45 @@ namespace NiMotion.View
 
         private void Button_Apply_Click(object sender, RoutedEventArgs e)
         {
+            UpdateSettings();
+        }
+
+        private void WriteIni()
+        {
+            IniFileHelper.WriteValue("sys", "EnableLog", SystemSettingModel.EnableLog ? "1" : "0");
+            IniFileHelper.WriteValue("sys", "RefreshFrequency", SystemSettingModel.RefreshFrequency.ToString());
+            IniFileHelper.WriteValue("sys", "Language", SystemSettingModel.Language == SystemSettingPropertyModel.language.Chinese ? "Chinese" : "English");
+            IniFileHelper.WriteValue("sys", "Theme", SystemSettingModel.Theme == SystemSettingPropertyModel.theme.White ? "White" : "Dark");
+        }
+
+        private void ReadIni()
+        {
+            SystemSettingModel.EnableLog = IniFileHelper.IniValue("sys", "EnableLog","0") =="0" ? false : true;
+            SystemSettingModel.RefreshFrequency = Convert.ToInt32(IniFileHelper.IniValue("sys", "RefreshFrequency", "1"));
+            SystemSettingModel.Language = IniFileHelper.IniValue("sys", "Language", "English") == "Chinese" ? 
+                SystemSettingPropertyModel.language.Chinese: SystemSettingPropertyModel.language.English;
+            SystemSettingModel.Theme = IniFileHelper.IniValue("sys", "Theme", "White") == "White" ? SystemSettingPropertyModel.theme.White: SystemSettingPropertyModel.theme.Dark ;
+
+        }
+
+        public void UpdateSettings()
+        {
             if (SystemSettingModel.Language == SystemSettingPropertyModel.language.Chinese)
                 UpdateLanguageEvent("zh-CN");
             else
                 UpdateLanguageEvent("en-US");
+
+            if (SystemSettingModel.Theme == SystemSettingPropertyModel.theme.White)
+                UpdateThemeEvent("White");
+            else
+                UpdateThemeEvent("Dark");
+
+            WriteIni();
         }
 
         private void Button_Cancle_Click(object sender, RoutedEventArgs e)
         {
-
+            ReadIni();
         }
     }
 }

@@ -89,10 +89,12 @@ namespace NiMotion.View
 
         }
 
-        public double ReadFromIni(string Param, string def)
+  
+
+        public string ReadFromIni(string Param, string def)
         {
             string readValue = IniFileHelper.IniValue(Section, Param, def);
-            return Convert.ToDouble(readValue);
+            return readValue;
         }
 
         public void WriteToIni(string Param, string Value)
@@ -102,7 +104,28 @@ namespace NiMotion.View
 
         public void IniInitialize()
         {
-            context.MotorSpeed = ReadFromIni("Speed", "18.0");
+            context.MotorSpeed = Convert.ToDouble(ReadFromIni("Speed", "18.0"));
+            context.IsShowTimer = ReadFromIni("ShowTimer", "0") == "1" ? true : false;
+            context.Hour = Convert.ToInt32(ReadFromIni("TimerHour", "0"));
+            context.Min = Convert.ToInt32(ReadFromIni("TimerMin", "0"));
+            context.Sec = Convert.ToInt32(ReadFromIni("TimerSec", "0"));
+            RBForward.IsChecked = ReadFromIni("Rotation", "Forward") == "Forward" ? true : false;
+            context.Position = Convert.ToInt32(ReadFromIni("Position", "0"));
+            CBOrigin.IsChecked = ReadFromIni("Origin", "0") == "0" ? true : false;
+            RBAbsolute.IsChecked = ReadFromIni("LocationMode", "Absolute") == "Absolute" ? true : false;
+        }
+
+        public void WriteValueToIni()
+        {
+            WriteToIni("Speed", context.MotorSpeed.ToString());
+            WriteToIni("ShowTimer", context.IsShowTimer ? "1" : "0");
+            WriteToIni("TimerHour", context.Hour.ToString());
+            WriteToIni("TimerMin", context.Min.ToString());
+            WriteToIni("TimerSec", context.Sec.ToString());
+            WriteToIni("Rotation", (bool)RBForward.IsChecked ? "Forward" : "Reverse");
+            WriteToIni("Position", context.Position.ToString());
+            WriteToIni("Origin", (bool)CBOrigin.IsChecked ? "1" : "0");
+            WriteToIni("LocationMode", (bool)RBAbsolute.IsChecked ? "Absolute" : "Relative");
         }
 
         public uint ReadParam(string param)
@@ -202,19 +225,19 @@ namespace NiMotion.View
                 Thread.Sleep(200);
                 if ((bool)RBAbsolute.IsChecked)  //绝对位置
                 {
-                    ret = NimServoSDK.Nim_moveAbsolute(context.MotorMaster, context.MotorAddr, (double)context.Position, 0, 1);
+                    ret = NimServoSDK.Nim_moveAbsolute(context.MotorMaster, context.MotorAddr, (double)context.Position * 10000, 0, 1);
                     if (0 != ret) throw new Exception(string.Format("Call NiM_moveAbsolute Failed [{0}]", ret));
                 }
                 else if ((bool)RBRelative.IsChecked) //相对位置
                 {
-                    ret = NimServoSDK.Nim_moveRelative(context.MotorMaster, context.MotorAddr, (double)context.Position, 1, 1);
+                    ret = NimServoSDK.Nim_moveRelative(context.MotorMaster, context.MotorAddr, (double)context.Position * 10000, 1, 1);
                     if (0 != ret) throw new Exception(string.Format("Call NiM_moveRelative Failed [{0}]", ret));
                 }
                 Thread.Sleep(200);
                 bool isAbsolute = (bool)RBAbsolute.IsChecked;
                 Task.Run(() =>
                 {
-                    int pos = context.Position;
+                    int pos = context.Position * 10000;
 
                     while (true)
                     {
@@ -270,11 +293,10 @@ namespace NiMotion.View
 
         private async void Button_StartUp_Click(object sender, RoutedEventArgs e)
         {
+            
             if (context.IsMotorOpen && context.MotorAddr > 0 && context.MotorAddr < 249)
             {
-                WriteToIni("Speed", Convert.ToString(context.MotorSpeed));
-                WriteToIni("Timer", Convert.ToString(context.Timing));
-
+                WriteValueToIni();
                 if (!IsStop)
                 {
                     HandyControl.Controls.MessageBox.Show((string)FindResource("msg1"));

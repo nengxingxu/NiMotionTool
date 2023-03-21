@@ -47,7 +47,7 @@
     <system:String x:Key="RBReverse">逆时针</system:String>
 
     <system:String x:Key="PositionMode">位置模式</system:String>
-    <system:String x:Key="TargetPosition">目标位置</system:String>
+    <system:String x:Key="TargetPosition">目标位置(圈)</system:String>
     <system:String x:Key="LocationMode">定位模式</system:String>
     <system:String x:Key="RBAbsolute">绝对位置</system:String>
     <system:String x:Key="RBRelative">相对位置</system:String>
