@@ -63,9 +63,10 @@
                 </UniformGrid>
                 <!--<TextBox Margin="0,24,0,50" Text="{Binding Position}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="{DynamicResource TargetPosition}" Style="{StaticResource TextBoxExtend}"--> 
                          <!--hc:InfoElement.Necessary="True" />-->
-                <hc:NumericUpDown Margin="0,24,0,50"  hc:InfoElement.Placeholder="0" hc:InfoElement.Title="{DynamicResource TargetPosition}" hc:InfoElement.Necessary="True" Style="{StaticResource NumericUpDownExtend}"/>
-
-                <CheckBox Margin="10,0,0,0" x:Name="CBOrigin" Content="{DynamicResource StartAsOrigin}"></CheckBox>
+                <hc:NumericUpDown Margin="0,55,6,55"  Value="{Binding Position}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="{DynamicResource TargetPosition}" hc:InfoElement.Necessary="True" Style="{StaticResource NumericUpDownExtend}"/>
+                <TextBox Margin="2,55,0,55" Text="{Binding MotorPositionSpeed}" hc:InfoElement.Placeholder="1.0" Padding="5"  hc:InfoElement.Title="{DynamicResource MotorSpeed}" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+                <CheckBox Margin="2,80,0,55" x:Name="CBOrigin" Content="{DynamicResource StartAsOrigin}"></CheckBox>
                 <UniformGrid Rows="3" Columns="1" Margin="0,20,0,10">
                     <Label Width="140" Content="{DynamicResource LocationMode}" Margin="-30,0,0,0" BorderBrush="{x:Null}" BorderThickness="0"></Label>
                     <RadioButton x:Name="RBAbsolute" IsChecked="True" Content="{DynamicResource RBAbsolute}" VerticalAlignment="Center" Padding="5" Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120" />

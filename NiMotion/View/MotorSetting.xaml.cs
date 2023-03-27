@@ -68,8 +68,7 @@ namespace NiMotion.View
             MotorSettingModel.MinSpeed = ReadParamFromIni("MinSpeed", "1");
             MotorSettingModel.Acceleration =  ReadParamFromIni("Acceleration", "2000");
             MotorSettingModel.Deceleration =  ReadParamFromIni("Deceleration", "2000");
-            MotorSettingModel.MaxAcceleration =  ReadParamFromIni("MaxAcceleration", "2000");
-            MotorSettingModel.MaxDeceleration =  ReadParamFromIni("MaxDeceleration", "2000");
+
         }
 
         public void WriteMotorParam(string param, uint value)
@@ -80,7 +79,14 @@ namespace NiMotion.View
             if (IsMotorOpen && MotorAddr > 0 && MotorAddr < 248)
             {
                 uint readValue = 0;
-                ret = NimServoSDK.Nim_get_param_value(MotorMaster, MotorAddr, param, ref readValue, 1);
+                ret = NimServoSDK.Nim_get_maxMotorSpeed(MotorMaster, MotorAddr, ref readValue);
+                if(readValue != MotorSettingModel.MaxSpeed)
+                {
+                    NimServoSDK.Nim_set_maxMotorSpeed(MotorMaster, MotorAddr, MotorSettingModel.MaxSpeed);
+                }
+
+                //ret = NimServoSDK.Nim_get_minMotorSpeed(MotorMaster, MotorAddr, ref readValue);
+
                 if (0 != ret)
                     throw new Exception(string.Format("NiM_readParam {0} Failed [{1}]", param, ret));
                 if(readValue != value) {
@@ -109,8 +115,7 @@ namespace NiMotion.View
                 WriteMotorParam("MinSpeed", MotorSettingModel.MinSpeed);
                 WriteMotorParam("Acceleration", MotorSettingModel.Acceleration);
                 WriteMotorParam("Deceleration", MotorSettingModel.Deceleration);
-                WriteMotorParam("MaxAcceleration", MotorSettingModel.MaxAcceleration);
-                WriteMotorParam("MaxDeceleration", MotorSettingModel.MaxDeceleration);
+
             }
             catch (Exception ex)
             {
@@ -155,8 +160,7 @@ namespace NiMotion.View
                 MotorSettingModel.MinSpeed = SyncMotorParam("MinSpeed");
                 MotorSettingModel.Acceleration = SyncMotorParam("Acceleration");
                 MotorSettingModel.Deceleration = SyncMotorParam("Deceleration");
-                MotorSettingModel.MaxAcceleration = SyncMotorParam("MaxAcceleration");
-                MotorSettingModel.MaxDeceleration = SyncMotorParam("MaxDeceleration");
+
                 
                 
             }

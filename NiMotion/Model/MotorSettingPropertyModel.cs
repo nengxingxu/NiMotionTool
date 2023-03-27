@@ -69,35 +69,6 @@ namespace NiMotion.Model
             }
         }
 
-        private uint maxAcceleration;
-        [Category("Speed/Acceleration")]
-        public uint MaxAcceleration
-        {
-            get
-            {
-                return maxAcceleration;
-            }
-            set
-            {
-                maxAcceleration = value;
-                RaisePropertyChanged("MaxAcceleration");
-            }
-        }
 
-
-        private uint maxDeceleration;
-        [Category("Speed/Acceleration")]
-        public uint MaxDeceleration
-        {
-            get
-            {
-                return maxDeceleration;
-            }
-            set
-            {
-                maxDeceleration = value;
-                RaisePropertyChanged("MaxDeceleration");
-            }
-        }
     }
 }

@@ -102,6 +102,17 @@ namespace NiMotion.ViewModel
             }
         }
 
+        private int motorPositionSpeed;
+        public int MotorPositionSpeed
+        {
+            get { return motorPositionSpeed; }
+            set
+            {
+                motorPositionSpeed = value;
+                RaisePropertyChanged("MotorPositionSpeed");
+            }
+        }
+
         private int sec;
         public int Sec
         {

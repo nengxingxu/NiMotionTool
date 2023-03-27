@@ -41,7 +41,6 @@ namespace NiMotion.View
             get { return context; }
         }
 
-
         public bool IsMotorOpen
         {
             set
@@ -54,8 +53,6 @@ namespace NiMotion.View
                 }
             }
         }
-
-
 
         private MotorOperationViewModel context;
         public MotorOperation()
@@ -89,7 +86,6 @@ namespace NiMotion.View
 
         }
 
-  
 
         public string ReadFromIni(string Param, string def)
         {
@@ -109,10 +105,24 @@ namespace NiMotion.View
             context.Hour = Convert.ToInt32(ReadFromIni("TimerHour", "0"));
             context.Min = Convert.ToInt32(ReadFromIni("TimerMin", "0"));
             context.Sec = Convert.ToInt32(ReadFromIni("TimerSec", "0"));
-            RBForward.IsChecked = ReadFromIni("Rotation", "Forward") == "Forward" ? true : false;
+            if (ReadFromIni("Rotation", "Forward") == "Forward")
+            {
+                RBForward.IsChecked = true;
+            }
+            else
+            {
+                RBReverse.IsChecked = false;
+            }
             context.Position = Convert.ToInt32(ReadFromIni("Position", "0"));
-            CBOrigin.IsChecked = ReadFromIni("Origin", "0") == "0" ? true : false;
-            RBAbsolute.IsChecked = ReadFromIni("LocationMode", "Absolute") == "Absolute" ? true : false;
+            context.MotorPositionSpeed = Convert.ToInt32(ReadFromIni("PositionSpeed", "0"));
+            CBOrigin.IsChecked = ReadFromIni("Origin", "0") != "0" ? true : false;
+            if(ReadFromIni("LocationMode", "Absolute") == "Absolute")
+            {
+                RBAbsolute.IsChecked = true;
+            } else
+            {
+                RBRelative.IsChecked = true;
+            }
         }
 
         public void WriteValueToIni()
@@ -124,6 +134,7 @@ namespace NiMotion.View
             WriteToIni("TimerSec", context.Sec.ToString());
             WriteToIni("Rotation", (bool)RBForward.IsChecked ? "Forward" : "Reverse");
             WriteToIni("Position", context.Position.ToString());
+            WriteToIni("PositionSpeed", context.MotorPositionSpeed.ToString());
             WriteToIni("Origin", (bool)CBOrigin.IsChecked ? "1" : "0");
             WriteToIni("LocationMode", (bool)RBAbsolute.IsChecked ? "Absolute" : "Relative");
         }
@@ -209,6 +220,7 @@ namespace NiMotion.View
                 } else
                 {
                     ret = NimServoSDK.Nim_set_param_value(context.MotorMaster, context.MotorAddr, "I2031-1", 0, 1);
+                    Thread.Sleep(200);
                 }
 
 
@@ -218,6 +230,8 @@ namespace NiMotion.View
                 ret = NimServoSDK.Nim_power_on(context.MotorMaster, context.MotorAddr, 1);
                 if (0 != ret) throw new Exception(string.Format("Call NiM_powerOn Failed [{0}]", ret));
 
+                NimServoSDK.Nim_set_profileVelocity(context.MotorMaster, context.MotorAddr, 
+                    ConvertToStepSpeed(context.MotorPositionSpeed));
 
                 double fromPosition = 0;
                 ret = NimServoSDK.Nim_get_currentPosition(context.MotorMaster, context.MotorAddr, ref fromPosition, 1);
@@ -230,7 +244,7 @@ namespace NiMotion.View
                 }
                 else if ((bool)RBRelative.IsChecked) //相对位置
                 {
-                    ret = NimServoSDK.Nim_moveRelative(context.MotorMaster, context.MotorAddr, (double)context.Position * 10000, 1, 1);
+                    ret = NimServoSDK.Nim_moveRelative(context.MotorMaster, context.MotorAddr, (double)context.Position * 10000, 0, 1);
                     if (0 != ret) throw new Exception(string.Format("Call NiM_moveRelative Failed [{0}]", ret));
                 }
                 Thread.Sleep(200);
