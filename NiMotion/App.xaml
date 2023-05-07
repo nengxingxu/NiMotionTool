@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="Resource/Style/Primary/Primary.xaml"/>
                 <!-- Language -->
                 <ResourceDictionary Source="Resource/Lang/Lang.zh-CN.xaml"/>
+                <ResourceDictionary Source="Resource/Lang/Lang.en-US.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <FontFamily x:Key="IconFont">pack://application:,,,/Resource/#iconfont</FontFamily>
         </ResourceDictionary>

@@ -28,20 +28,20 @@ namespace NiMotion.ViewModel
             }
         }
 
-        public HomeWindowViewModel()
+        public HomeWindowViewModel(Dictionary<string, string> name_dict)
         {
             SelectedIndex = 0;
-            DataList = GetDataList();
+            DataList = GetDataList(name_dict);
         }
 
-        private ObservableCollection<DataModel> GetDataList()
+        private ObservableCollection<DataModel> GetDataList(Dictionary<string, string> name_dict)
         {
             //string name = Properties.Lang.ResourceManager.GetString("Button");
             return new ObservableCollection<DataModel>
             {
-                new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/MotorOperation.png", Name = "MotorOperation"},
-                new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/MotorSetting.png", Name = "MotorSetting"},
-                new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/SystemSetting.png", Name = "SystemSetting"}
+                new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/MotorOperation.png", Name = name_dict["MotorOperation"]},
+                new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/MotorSetting.png", Name = name_dict["MotorSetting"]},
+                new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/SystemSetting.png", Name = name_dict["SystemSetting"]}
             };
         }
     }

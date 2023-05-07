@@ -14,7 +14,8 @@ using System.Windows.Shapes;
 using HandyControl.Controls;
 using NiMotion.Common;
 using NiMotion.Model;
-using SDKDemo;
+using NimServoSDK_DLL;
+
 
 namespace NiMotion.View
 {
@@ -25,6 +26,7 @@ namespace NiMotion.View
     {
         
         public bool IsMotorOpen { get; set; }
+        public uint MotorMaster { get; set; }
         public int MotorAddr { get; set; }
 
         private string Section = "MotorParam";
@@ -35,8 +37,6 @@ namespace NiMotion.View
         {
             InitializeComponent();
 
-            motorSettingDict = NiMotionRegisterDict.GetMotorSettingKeyDict();
-            motorSettingLength = NiMotionRegisterDict.GetMotorSettingLengthDict();
             MotorSettingModel = new MotorSettingPropertyModel();
             DataContext = this;
             MotorParamsInit();
@@ -55,41 +55,42 @@ namespace NiMotion.View
             set => SetValue(ModelProperty, value);
         }
 
-        private int ReadParamFromIni(string param, string def)
+        private uint ReadParamFromIni(string param, string def)
         {
-            int paramId = motorSettingDict[param];
-            int paramLength = motorSettingLength[param];
             string readValue = IniFileHelper.IniValue(Section, param, def);
-            return Convert.ToInt32(readValue);
+            return Convert.ToUInt32(readValue);
         }
 
         private void MotorParamsInit()
         {
-            MotorSettingModel.Segmentation = (Segment)ReadParamFromIni("Segmentation", "3");
-            MotorSettingModel.StartEnd = (StopWay)ReadParamFromIni("StartEnd", "1");
-            MotorSettingModel.EmergencyStop = (StopWay)ReadParamFromIni("EmergencyStop", "0");
-            MotorSettingModel.FaultAction = (StopWay)ReadParamFromIni("FaultAction", "0");
+
             MotorSettingModel.MaxSpeed = ReadParamFromIni("MaxSpeed", "250");
             MotorSettingModel.MinSpeed = ReadParamFromIni("MinSpeed", "1");
-            MotorSettingModel.Acceleration = ReadParamFromIni("Acceleration", "2000");
-            MotorSettingModel.Deceleration = ReadParamFromIni("Deceleration", "2000");
-            MotorSettingModel.MaxAcceleration = ReadParamFromIni("MaxAcceleration", "2000");
-            MotorSettingModel.MaxDeceleration = ReadParamFromIni("MaxDeceleration", "2000");
+            MotorSettingModel.Acceleration =  ReadParamFromIni("Acceleration", "2000");
+            MotorSettingModel.Deceleration =  ReadParamFromIni("Deceleration", "2000");
+
         }
 
-        public void WriteMotorParam(string param, int value)
+        public void WriteMotorParam(string param, uint value)
         {
             int ret = 0;
             int paramId = motorSettingDict[param];
             int paramLength = motorSettingLength[param];
             if (IsMotorOpen && MotorAddr > 0 && MotorAddr < 248)
             {
-                int readValue = 0;
-                ret = NiMotionSDK.NiM_readParam(MotorAddr, paramId, paramLength, ref readValue);
-                if(0 != ret)
+                uint readValue = 0;
+                ret = NimServoSDK.Nim_get_maxMotorSpeed(MotorMaster, MotorAddr, ref readValue);
+                if(readValue != MotorSettingModel.MaxSpeed)
+                {
+                    NimServoSDK.Nim_set_maxMotorSpeed(MotorMaster, MotorAddr, MotorSettingModel.MaxSpeed);
+                }
+
+                //ret = NimServoSDK.Nim_get_minMotorSpeed(MotorMaster, MotorAddr, ref readValue);
+
+                if (0 != ret)
                     throw new Exception(string.Format("NiM_readParam {0} Failed [{1}]", param, ret));
                 if(readValue != value) {
-                    ret = NiMotionSDK.NiM_writeParam(MotorAddr, paramId, paramLength, value);
+                    ret = NimServoSDK.Nim_set_param_value(MotorMaster, MotorAddr, param, value, 1);
                     if (0 != ret)
                         throw new Exception(string.Format("NiM_writeParam {0} Failed [{1}]", param, ret));
                 }
@@ -98,10 +99,10 @@ namespace NiMotion.View
             {
                 if (!IsMotorOpen)
                 {
-                    throw new Exception(string.Format("Motor device is not opened"));
+                    throw new Exception((string)FindResource("msg2"));
                 }else
                 {
-                    throw new Exception(string.Format("Motor address out of range"));
+                    throw new Exception((string)FindResource("msg3"));
                 }
             }
         }
@@ -110,16 +111,11 @@ namespace NiMotion.View
         {
             try
             {
-                WriteMotorParam("Segmentation", Convert.ToInt32(MotorSettingModel.Segmentation));
-                WriteMotorParam("StartEnd", Convert.ToInt32(MotorSettingModel.StartEnd));
-                WriteMotorParam("EmergencyStop", Convert.ToInt32(MotorSettingModel.EmergencyStop));
-                WriteMotorParam("FaultAction", Convert.ToInt32(MotorSettingModel.FaultAction));
                 WriteMotorParam("MaxSpeed", MotorSettingModel.MaxSpeed);
                 WriteMotorParam("MinSpeed", MotorSettingModel.MinSpeed);
                 WriteMotorParam("Acceleration", MotorSettingModel.Acceleration);
                 WriteMotorParam("Deceleration", MotorSettingModel.Deceleration);
-                WriteMotorParam("MaxAcceleration", MotorSettingModel.MaxAcceleration);
-                WriteMotorParam("MaxDeceleration", MotorSettingModel.MaxDeceleration);
+
             }
             catch (Exception ex)
             {
@@ -128,17 +124,17 @@ namespace NiMotion.View
         }
 
 
-        private int SyncMotorParam(string param)
+        private uint SyncMotorParam(string param)
         {
             int ret = 0;
             int paramId = motorSettingDict[param];
             int paramLength = motorSettingLength[param];
             if (IsMotorOpen && MotorAddr > 0 && MotorAddr < 248)
             {
-                int readValue = 0;
-                ret = NiMotionSDK.NiM_readParam(MotorAddr, paramId, paramLength, ref readValue);
+                uint readValue = 0;
+                ret = NimServoSDK.Nim_get_param_value(MotorMaster, MotorAddr, param, ref readValue, 1);
                 if (0 != ret)
-                    throw new Exception(string.Format("NiM_readParam {0} Failed [{1}]", param, ret));
+                    throw new Exception(string.Format("Nim_get_param_value {0} Failed [{1}]", param, ret));
 
                 IniFileHelper.WriteValue(Section, param, Convert.ToString(readValue));
                 return readValue;
@@ -147,11 +143,11 @@ namespace NiMotion.View
             {
                 if (!IsMotorOpen)
                 {
-                    throw new Exception(string.Format("Motor Device is not opened"));
+                    throw new Exception((string)FindResource("msg2"));
                 }
                 else
                 {
-                    throw new Exception(string.Format("Motor address out of range"));
+                    throw new Exception((string)FindResource("msg3"));
                 }
             }
         }
@@ -160,16 +156,11 @@ namespace NiMotion.View
         {
             try
             {
-                MotorSettingModel.Segmentation = (Segment)SyncMotorParam("Segmentation");
-                MotorSettingModel.StartEnd = (StopWay)SyncMotorParam("StartEnd");
-                MotorSettingModel.EmergencyStop = (StopWay)SyncMotorParam("EmergencyStop");
-                MotorSettingModel.FaultAction = (StopWay)SyncMotorParam("FaultAction");
                 MotorSettingModel.MaxSpeed = SyncMotorParam("MaxSpeed");
                 MotorSettingModel.MinSpeed = SyncMotorParam("MinSpeed");
                 MotorSettingModel.Acceleration = SyncMotorParam("Acceleration");
                 MotorSettingModel.Deceleration = SyncMotorParam("Deceleration");
-                MotorSettingModel.MaxAcceleration = SyncMotorParam("MaxAcceleration");
-                MotorSettingModel.MaxDeceleration = SyncMotorParam("MaxDeceleration");
+
                 
                 
             }

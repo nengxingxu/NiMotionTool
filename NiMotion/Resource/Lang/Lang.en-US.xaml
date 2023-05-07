@@ -3,6 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <system:String x:Key="Cancel">Cancel</system:String>
+    <system:String x:Key="Apply">Apply</system:String>
     <system:String x:Key="Clear">Clear</system:String>
     <system:String x:Key="Close">Close</system:String>
     <system:String x:Key="CloseAll">Close all</system:String>
@@ -15,8 +16,69 @@
     <system:String x:Key="No">No</system:String>
     <system:String x:Key="OutOfRange">Out of range</system:String>
     <system:String x:Key="Yes">Yes</system:String>
+    <system:String x:Key="Unkown">Unkown</system:String>
 
     <system:String x:Key="Button">Button</system:String>
     <system:String x:Key="Brush">Brush</system:String>
+  
+    
+    <!--TabPage-->
+    <system:String x:Key="MotorOperation">MotorOperation</system:String>
+    <system:String x:Key="MotorSetting">MotorSetting</system:String>
+    <system:String x:Key="SystemSetting">SystemSetting</system:String>
+
+    <!--TopBar-->
+    <system:String x:Key="OpenDev">OpenDevice</system:String>
+    <system:String x:Key="CloseDev">CloseDevice</system:String>
+    <system:String x:Key="SerialPort">SerialPort</system:String>
+    <system:String x:Key="SerialBaud">Baudrate</system:String>
+    <system:String x:Key="MotorAddr">MotorAddress</system:String>
+    
+    <!--MotorOperation-->
+    <system:String x:Key="SpeedMode">SpeedMode</system:String>
+    <system:String x:Key="EnableTimer">EnableTimer</system:String>
+    <system:String x:Key="hour">hour</system:String>
+    <system:String x:Key="min">min</system:String>
+    <system:String x:Key="sec">sec</system:String>
+    <system:String x:Key="MotorSpeed">Motor speed(rad/s)</system:String>
+    <system:String x:Key="RotationDirection">Rotation direction</system:String>
+    <system:String x:Key="RBForward">RBForward</system:String>
+    <system:String x:Key="RBReverse">RBReverse</system:String>
+
+
+
+    <system:String x:Key="PositionMode">Position mode</system:String>
+    <system:String x:Key="TargetPosition">TargetPosition(circle)</system:String>
+    <system:String x:Key="LocationMode">Location Mode</system:String>
+    <system:String x:Key="RBAbsolute">Absolute</system:String>
+    <system:String x:Key="RBRelative">Relative</system:String>
+    <system:String x:Key="StartAsOrigin">Start as origin</system:String>
+
+    <system:String x:Key="RBSpeed">Speed</system:String>
+    <system:String x:Key="RBPosition">Position</system:String>
+    <system:String x:Key="StartUp">StartUp</system:String>
+    <system:String x:Key="Hold">Hold</system:String>
+    <system:String x:Key="Offline">Offline</system:String>
+    <system:String x:Key="Stop">Stop</system:String>
+
+    <!--MotorSetting-->
+    <system:String x:Key="ReadParams">ReadParams</system:String>
+    <system:String x:Key="WriteParams">WriteParams</system:String>
+
+    <!--BottomBar-->
+    <system:String x:Key="Mode">Mode</system:String>
+    <system:String x:Key="Status">Status</system:String>
+    <system:String x:Key="Speed">Speed</system:String>
+    <system:String x:Key="Acceleration">Acceleration</system:String>
+    <system:String x:Key="Deceleration">Deceleration</system:String>
+    <system:String x:Key="Position">Position</system:String>
+    <system:String x:Key="Online">Online</system:String>
+    <system:String x:Key="Off-line">Offline</system:String>
+
+    <system:String x:Key="msg1">Pelase Stop motor first</system:String>
+    <system:String x:Key="msg2">Motor device is not opened</system:String>
+    <system:String x:Key="msg3">Please select the motor machine number</system:String>
+    <system:String x:Key="msg4">No serial port exist</system:String>
+    <system:String x:Key="msg5">Unkown Mode</system:String>
 
 </ResourceDictionary>

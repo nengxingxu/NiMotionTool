@@ -3,75 +3,15 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
-using SDKDemo;
 
 namespace NiMotion.Model
 {
     public class MotorSettingPropertyModel : NotificationBinding
     {
-        private Segment segmentation;
-        [Description("Segmentation"), Category("Common")]
-        public Segment Segmentation
-        {
-            get
-            {
-                return segmentation;
-            }
-            set
-            {
-                segmentation = value;
-                RaisePropertyChanged("Segmentation");
-            }
-        }
 
-        private StopWay startEnd;
-        [Description("StartEnd"), Category("Common")]
-        public StopWay StartEnd
-        {
-            get
-            {
-                return startEnd;
-            }
-            set
-            {
-                startEnd = value;
-                RaisePropertyChanged("StartEnd");
-            }
-        }
-
-        private StopWay emergencyStop;
-        [Category("Common")]
-        public StopWay EmergencyStop
-        {
-            get
-            {
-                return emergencyStop;
-            }
-            set
-            {
-                emergencyStop = value;
-                RaisePropertyChanged("EmergencyStop");
-            }
-        }
-
-        private StopWay faultAction;
-        [Category("Common")]
-        public StopWay FaultAction
-        {
-            get
-            {
-                return faultAction;
-            }
-            set
-            {
-                faultAction = value;
-                RaisePropertyChanged("FaultAction");
-            }
-        }
-
-        private int maxSpeed;
+        private uint maxSpeed;
         [Category("Speed/Acceleration")]
-        public int MaxSpeed
+        public uint MaxSpeed
         {
             get
             {
@@ -84,9 +24,9 @@ namespace NiMotion.Model
             }
         }
 
-        private int minSpeed;
+        private uint minSpeed;
         [Category("Speed/Acceleration")]
-        public int MinSpeed
+        public uint MinSpeed
         {
             get
             {
@@ -99,9 +39,9 @@ namespace NiMotion.Model
             }
         }
 
-        private int acceleration;
+        private uint acceleration;
         [Category("Speed/Acceleration")]
-        public int Acceleration
+        public uint Acceleration
         {
             get
             {
@@ -114,9 +54,9 @@ namespace NiMotion.Model
             }
         }
 
-        private int deceleration;
+        private uint deceleration;
         [Category("Speed/Acceleration")]
-        public int Deceleration
+        public uint Deceleration
         {
             get
             {
@@ -129,50 +69,6 @@ namespace NiMotion.Model
             }
         }
 
-        private int maxAcceleration;
-        [Category("Speed/Acceleration")]
-        public int MaxAcceleration
-        {
-            get
-            {
-                return maxAcceleration;
-            }
-            set
-            {
-                maxAcceleration = value;
-                RaisePropertyChanged("MaxAcceleration");
-            }
-        }
 
-
-        private int maxDeceleration;
-        [Category("Speed/Acceleration")]
-        public int MaxDeceleration
-        {
-            get
-            {
-                return maxDeceleration;
-            }
-            set
-            {
-                maxDeceleration = value;
-                RaisePropertyChanged("MaxDeceleration");
-            }
-        }
-    }
-
-    public enum Segment
-    {
-        step_full,
-        step_half,
-        step_1_4,
-        step_1_8,
-        step_1_16
-    }
-
-    public enum StopWay
-    {
-        NoDecelerationShutdown,
-        ShutdownWithCertainDeceleration
     }
 }

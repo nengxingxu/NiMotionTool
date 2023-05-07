@@ -2,7 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
+
     <system:String x:Key="Cancel">取消</system:String>
+    <system:String x:Key="Apply">应用</system:String>
     <system:String x:Key="Clear">清空</system:String>
     <system:String x:Key="Close">关闭</system:String>
     <system:String x:Key="CloseAll">关闭所有</system:String>
@@ -15,8 +17,67 @@
     <system:String x:Key="No">否</system:String>
     <system:String x:Key="OutOfRange">不在范围内</system:String>
     <system:String x:Key="Yes">是</system:String>
+    <system:String x:Key="Unkown">未知</system:String>
     
     <system:String x:Key="Button">按钮</system:String>
     <system:String x:Key="Brush">画刷</system:String>
+
+    <system:String x:Key="OpenDev">打开设备</system:String>
+    <system:String x:Key="CloseDev">关闭设备</system:String>
+
+    <!--TabPage-->
+    <system:String x:Key="MotorOperation">电机操作</system:String>
+    <system:String x:Key="MotorSetting">电机参数设置</system:String>
+    <system:String x:Key="SystemSetting">系统参数设置</system:String>
+
+    <!--TopBar-->
+    <system:String x:Key="SerialPort">串口号</system:String>
+    <system:String x:Key="SerialBaud">串口波特率</system:String>
+    <system:String x:Key="MotorAddr">电机地址</system:String>
+
+    <!--MotorOperation-->
+    <system:String x:Key="SpeedMode">速度模式</system:String>
+    <system:String x:Key="EnableTimer">启用定时器</system:String>
+    <system:String x:Key="hour">小时</system:String>
+    <system:String x:Key="min">分</system:String>
+    <system:String x:Key="sec">秒</system:String>
+    <system:String x:Key="MotorSpeed">电机速度 (rad/s)</system:String>
+    <system:String x:Key="RotationDirection">旋转方向</system:String>
+    <system:String x:Key="RBForward">顺时针</system:String>
+    <system:String x:Key="RBReverse">逆时针</system:String>
+
+    <system:String x:Key="PositionMode">位置模式</system:String>
+    <system:String x:Key="TargetPosition">目标位置(圈)</system:String>
+    <system:String x:Key="LocationMode">定位模式</system:String>
+    <system:String x:Key="RBAbsolute">绝对位置</system:String>
+    <system:String x:Key="RBRelative">相对位置</system:String>
+    <system:String x:Key="StartAsOrigin">设置起点为原点</system:String>
+
+    <system:String x:Key="StartUp">启动</system:String>
+    <system:String x:Key="Hold">上电</system:String>
+    <system:String x:Key="Offline">下电</system:String>
+    <system:String x:Key="Stop">停止</system:String>
+
+    <!--MotorSetting-->
+    <system:String x:Key="ReadParams">读取参数</system:String>
+    <system:String x:Key="WriteParams">写入参数</system:String>
+
+    <!--BottomBar-->
+    <system:String x:Key="Mode">模式</system:String>
+    <system:String x:Key="Status">状态</system:String>
+    <system:String x:Key="Speed">速度</system:String>
+    <system:String x:Key="Acceleration">加速度</system:String>
+    <system:String x:Key="Deceleration">减速度</system:String>
+    <system:String x:Key="Position">位置</system:String>
+    <system:String x:Key="Online">在线</system:String>
+    <system:String x:Key="Off-line">脱机</system:String>
+
+
+    <system:String x:Key="msg1">请先停止电机转动</system:String>
+    <system:String x:Key="msg2">电机未连接</system:String>
+    <system:String x:Key="msg3">请选择电机序列号</system:String>
+    <system:String x:Key="msg4">串口不存在</system:String>
+    <system:String x:Key="msg5">未知模式</system:String>
+
 
 </ResourceDictionary>
