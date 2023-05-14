@@ -1,0 +1,14 @@
+{
+    "Config": {
+        "Language": "zh",
+        "RegCode": "C88989F8DFD62274D4192A28CCCEB5AC"
+    },
+    "CurrentUser": {
+        "CommunicationType": "CANOPEN",
+        "LoginName": "nimotion",
+        "Password": "\f\u0003\u0002\u001a\f]<\u001e\f\\ZS",
+        "RealName": "",
+        "SavePwd": true,
+        "UserID": 0
+    }
+}
