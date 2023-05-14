@@ -32,6 +32,7 @@ namespace NiMotion
         private MotorOperation motorOperation = new MotorOperation();
         private MotorSetting motorSetting = new MotorSetting();
         private SystemSetting systemSetting = new SystemSetting();
+        private AutoRunScript autoRunScript = new AutoRunScript();
 
 
 
@@ -44,6 +45,7 @@ namespace NiMotion
             name_dict.Add("MotorOperation", (string)FindResource("MotorOperation"));
             name_dict.Add("MotorSetting", (string)FindResource("MotorSetting"));
             name_dict.Add("SystemSetting", (string)FindResource("SystemSetting"));
+            name_dict.Add("AutoRunScript", (string)FindResource("AutoRunScript"));
             context = new HomeWindowViewModel(name_dict);
             DataContext = context;
             systemSetting.UpdateSettings();
@@ -92,6 +94,10 @@ namespace NiMotion
             {
                 main_content.Children.Add(motorSetting);
             }
+            else if (name == "AutoRunScript" || name == "脚本自动化")
+            {
+                main_content.Children.Add(autoRunScript);
+            }
             else if (name == "SystemSetting" || name == "系统参数设置")
             {
                 main_content.Children.Add(systemSetting);
@@ -112,6 +118,10 @@ namespace NiMotion
                 else if (context.DataList[i].Name == "MotorSetting" || context.DataList[i].Name == "电机参数设置")
                 {
                     context.DataList[i].Name = (string)FindResource("MotorSetting");
+                }
+                else if (context.DataList[i].Name == "AutoRunScript" || context.DataList[i].Name == "脚本自动化")
+                {
+                    context.DataList[i].Name = (string)FindResource("AutoRunScript");
                 }
                 else if (context.DataList[i].Name == "SystemSetting" || context.DataList[i].Name == "系统参数设置")
                 {

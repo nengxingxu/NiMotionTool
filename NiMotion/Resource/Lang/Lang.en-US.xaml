@@ -26,6 +26,7 @@
     <system:String x:Key="MotorOperation">MotorOperation</system:String>
     <system:String x:Key="MotorSetting">MotorSetting</system:String>
     <system:String x:Key="SystemSetting">SystemSetting</system:String>
+    <system:String x:Key="AutoRunScript">AutoRunScript</system:String>
 
     <!--TopBar-->
     <system:String x:Key="OpenDev">OpenDevice</system:String>

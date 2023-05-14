@@ -41,6 +41,7 @@ namespace NiMotion.ViewModel
             {
                 new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/MotorOperation.png", Name = name_dict["MotorOperation"]},
                 new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/MotorSetting.png", Name = name_dict["MotorSetting"]},
+                new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/AutoRunScript.png", Name = name_dict["AutoRunScript"]},
                 new DataModel{ ImgPath = "pack://application:,,,/Resource/Image/LeftMainContent/SystemSetting.png", Name = name_dict["SystemSetting"]}
             };
         }

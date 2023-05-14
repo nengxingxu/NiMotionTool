@@ -29,6 +29,7 @@
     <system:String x:Key="MotorOperation">电机操作</system:String>
     <system:String x:Key="MotorSetting">电机参数设置</system:String>
     <system:String x:Key="SystemSetting">系统参数设置</system:String>
+    <system:String x:Key="AutoRunScript">脚本自动化</system:String>
 
     <!--TopBar-->
     <system:String x:Key="SerialPort">串口号</system:String>
