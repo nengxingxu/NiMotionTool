@@ -1,0 +1,5 @@
+[2023-05-14 17:57:28.014] SDK init
+[2023-05-14 17:57:28.074] 1004 : NiMotion TCP-CAN Device
+[2023-05-14 17:57:28.718] 0 : CANopen Master
+[2023-05-14 17:57:28.718] 1 : EtherCAT Master
+[2023-05-14 17:57:28.718] 2 : Modbus Master

@@ -1,0 +1,10 @@
+[2022-08-31 16:17:34.342] SDK init
+[2022-08-31 16:17:34.366] 1001 : NiMotion USB-CAN Device
+[2022-08-31 16:17:34.366] 1002 : Zhouligong Device
+[2022-08-31 16:17:34.366] 1004 : NiMotion TCP-CAN Device
+[2022-08-31 16:17:34.492] 0 : CANopen Master
+[2022-08-31 16:17:34.492] 1 : EtherCAT Master
+[2022-08-31 16:17:34.492] 2 : Modbus Master
+[2022-08-31 16:17:34.497] 1001 : NiMotion USB-CAN Device
+[2022-08-31 16:17:34.497] 1002 : Zhouligong Device
+[2022-08-31 16:17:34.498] 1004 : NiMotion TCP-CAN Device
