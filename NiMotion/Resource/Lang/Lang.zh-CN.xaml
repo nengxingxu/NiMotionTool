@@ -63,6 +63,14 @@
     <system:String x:Key="ReadParams">读取参数</system:String>
     <system:String x:Key="WriteParams">写入参数</system:String>
 
+    <!--AutoScript-->
+    <system:String x:Key="AddScript">新增脚本</system:String>
+    <system:String x:Key="DeleteScript">删除脚本</system:String>
+    <system:String x:Key="ClearScriptList">清空脚本列表</system:String>
+    <system:String x:Key="RunScript">执行脚本</system:String>
+    <system:String x:Key="StopScript">停止脚本</system:String>
+    <system:String x:Key="Image2Video">图片转视频</system:String>
+
     <!--BottomBar-->
     <system:String x:Key="Mode">模式</system:String>
     <system:String x:Key="Status">状态</system:String>
