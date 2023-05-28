@@ -64,6 +64,7 @@
     <system:String x:Key="WriteParams">写入参数</system:String>
 
     <!--AutoScript-->
+    <system:String x:Key="ImportMat">导入Mat</system:String>
     <system:String x:Key="AddScript">新增脚本</system:String>
     <system:String x:Key="DeleteScript">删除脚本</system:String>
     <system:String x:Key="ClearScriptList">清空脚本列表</system:String>

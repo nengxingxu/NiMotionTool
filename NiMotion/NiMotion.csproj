@@ -99,13 +99,14 @@
     <Compile Include="Common\IniFileHelper.cs" />
     <Compile Include="Model\ListDataModel.cs" />
     <Compile Include="Model\NotificationBinding.cs" />
+    <Compile Include="Model\StepDataModel.cs" />
     <Compile Include="Model\SystemSettingPropertyModel.cs" />
     <Compile Include="Model\DataModel.cs" />
     <Compile Include="SDK\NiMotionRegisterDict.cs" />
     <Compile Include="SDK\NimServoSDK.cs" />
     <Compile Include="ViewModel\BottomBarViewModel.cs" />
     <Compile Include="Model\MotorSettingPropertyModel.cs" />
-    <Compile Include="ViewModel\ListViewModel.cs" />
+    <Compile Include="ViewModel\AutoRunScriptViewModel.cs" />
     <Compile Include="ViewModel\MotorOperationViewModel.cs" />
     <Compile Include="ViewModel\TopBarViewModel.cs" />
     <Compile Include="ViewModel\HomeWindowViewModel.cs" />
