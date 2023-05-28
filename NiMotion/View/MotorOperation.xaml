@@ -19,7 +19,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <UniformGrid Grid.Row="0" Rows="1" Columns="6" >
+            <UniformGrid Grid.Row="0" Rows="1" Columns="5" >
                 <UniformGrid Rows="2" Margin="0,0,42.429,-0.429">
                     <hc:CircleProgressBar Margin="-62,0, 0, 0" Visibility="{Binding IsShowSpeedBar, Converter={StaticResource Bool2VisibilityConverter}}" HorizontalAlignment="Stretch" IsIndeterminate="True"  Width="50" Height="50"/>
                     <TextBlock Margin="3,-2.286,2.286,44.571" HorizontalAlignment="Stretch" Text="{DynamicResource SpeedMode}" Style="{StaticResource TextBlockDefaultAccent}" Height="40"/>
