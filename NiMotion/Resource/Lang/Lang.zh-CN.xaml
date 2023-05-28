@@ -72,6 +72,9 @@
     <system:String x:Key="StopScript">停止脚本</system:String>
     <system:String x:Key="Image2Video">图片转视频</system:String>
 
+    <system:String x:Key="ScriptName">脚本名称</system:String>
+    <system:String x:Key="ScriptPath">脚本路径</system:String>
+
     <!--BottomBar-->
     <system:String x:Key="Mode">模式</system:String>
     <system:String x:Key="Status">状态</system:String>

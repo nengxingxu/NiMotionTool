@@ -75,6 +75,9 @@
     <system:String x:Key="StopScript">StopScript</system:String>
     <system:String x:Key="Image2Video">Image2Video</system:String>
 
+    <system:String x:Key="ScriptName">ScriptName</system:String>
+    <system:String x:Key="ScriptPath">ScriptPath</system:String>
+
 
     <!--BottomBar-->
     <system:String x:Key="Mode">Mode</system:String>

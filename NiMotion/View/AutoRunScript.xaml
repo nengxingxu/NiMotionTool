@@ -61,8 +61,8 @@
                     <ListView Name="listView" Grid.ColumnSpan="3" >
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="150" Header="名称" DisplayMemberBinding="{Binding Name}"/>
-                                <GridViewColumn Width="400" Header="脚本路径" DisplayMemberBinding="{Binding Path}"/>
+                                <GridViewColumn Width="150" Header="{DynamicResource ScriptName}" DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Width="400" Header="{DynamicResource ScriptPath}" DisplayMemberBinding="{Binding Path}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
