@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:hc="https://handyorg.github.io/handycontrol"    
+        xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:v="clr-namespace:NiMotion.View"
         mc:Ignorable="d"
         ActiveGlowColor="{DynamicResource PrimaryColor}"
@@ -15,7 +15,7 @@
         Title="NiMotion" 
         Icon="Resource/Image/icon.ico"
         Height="800" 
-        Width="1100">
+        Width="1000">
 
 
     <Grid ShowGridLines="True" >
@@ -26,7 +26,11 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <v:TopBar x:Name="topBar" Margin="225,0,0,0.333"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="447*"/>
+                <ColumnDefinition Width="100*"/>
+            </Grid.ColumnDefinitions>
+            <v:TopBar x:Name="topBar" Margin="225,0,0.286,0" Grid.ColumnSpan="2"/>
         </Grid>
 
         <Grid Grid.Row="1" ShowGridLines="True">

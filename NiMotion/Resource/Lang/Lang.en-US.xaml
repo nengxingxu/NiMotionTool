@@ -26,6 +26,7 @@
     <system:String x:Key="MotorOperation">MotorOperation</system:String>
     <system:String x:Key="MotorSetting">MotorSetting</system:String>
     <system:String x:Key="SystemSetting">SystemSetting</system:String>
+    <system:String x:Key="AutoRunScript">AutoRunScript</system:String>
 
     <!--TopBar-->
     <system:String x:Key="OpenDev">OpenDevice</system:String>
@@ -60,10 +61,20 @@
     <system:String x:Key="Hold">Hold</system:String>
     <system:String x:Key="Offline">Offline</system:String>
     <system:String x:Key="Stop">Stop</system:String>
-
+    
     <!--MotorSetting-->
     <system:String x:Key="ReadParams">ReadParams</system:String>
     <system:String x:Key="WriteParams">WriteParams</system:String>
+
+    <!--AutoScript-->
+    <system:String x:Key="ImportMat">ImportMat</system:String>
+    <system:String x:Key="AddScript">AddScript</system:String>
+    <system:String x:Key="DeleteScript">DeleteScript</system:String>
+    <system:String x:Key="ClearScriptList">ClearScriptList</system:String>
+    <system:String x:Key="RunScript">RunScript</system:String>
+    <system:String x:Key="StopScript">StopScript</system:String>
+    <system:String x:Key="Image2Video">Image2Video</system:String>
+
 
     <!--BottomBar-->
     <system:String x:Key="Mode">Mode</system:String>

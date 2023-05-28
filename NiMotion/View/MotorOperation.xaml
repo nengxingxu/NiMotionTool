@@ -5,11 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:converter="clr-namespace:NiMotion.Common"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             Width="900">
     <UserControl.Resources>
         <converter:BoolToVisibilityConverter x:Key="Bool2VisibilityConverter"/>
     </UserControl.Resources>
-    <hc:TransitioningContentControl Width="1200">
+    <hc:TransitioningContentControl>
         <Grid ShowGridLines="True" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -56,7 +57,7 @@
                 </UniformGrid>
             </UniformGrid>
 
-            <UniformGrid Grid.Row="1" Rows="1" Columns="8">
+            <UniformGrid Grid.Row="1" Rows="1" Columns="7">
                 <UniformGrid Rows="2">
                     <hc:CircleProgressBar Margin="-62,0, 0, 0" Visibility="{Binding IsShowLocationBar,Converter={StaticResource Bool2VisibilityConverter}}" HorizontalAlignment="Stretch" IsIndeterminate="True"  Width="50" Height="50"/>
                     <TextBlock Margin="3,10.429,3.286,25.143" HorizontalAlignment="Stretch"  Text="{DynamicResource LocationMode}" Style="{StaticResource TextBlockDefaultAccent}" Height="29"/>
@@ -80,23 +81,39 @@
             </UniformGrid>
 
 
-            <UniformGrid Grid.Row="2" Rows="1" Columns="9">
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
                 <UniformGrid Grid.Column="0" Columns="0" Margin="5, 0, 0, 0">
                     <UniformGrid Rows="2" Columns="1">
                         <RadioButton x:Name="RBSpeed" IsChecked="True" Content="{DynamicResource SpeedMode}" HorizontalAlignment="Center" Padding="5" Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120"/>
                         <RadioButton x:Name="RBPosition" Content="{DynamicResource PositionMode}" HorizontalAlignment="Center" Padding="5"  Background="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryTextBrush}" Width="120"/>
                     </UniformGrid>
                 </UniformGrid>
-
-                <Button Name="BtnStartUp" Width ="100" Content="{DynamicResource StartUp}" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                <Border Margin="2" Grid.Column="1">
+                    <Button Name="BtnStartUp" Width ="100" Content="{DynamicResource StartUp}" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Center" Click="Button_StartUp_Click"/>
-                <Button Name="BtnHold" Width="100"  Content="{DynamicResource Hold}" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                </Border>
+                <Border Margin="2" Grid.Column="2">
+                    <Button Name="BtnHold" Width="100"  Content="{DynamicResource Hold}" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Center" Click="Button_Hold_Click" />
-                <Button Name="BtnOffline" Width="100" Content="{DynamicResource Offline}" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                </Border>
+                <Border Margin="2" Grid.Column="3">
+                    <Button Name="BtnOffline" Width="100" Content="{DynamicResource Offline}" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Center" Click="Button_Offline_Click"/>
+                </Border>
+                <Border Margin="2" Grid.Column="3">
                 <Button Name="BtnStop" Width="100" Content="{DynamicResource Stop}" Padding="5" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Center" Click="Button_Stop_Click"/>
-            </UniformGrid>
+                </Border>
+            </Grid>
 
         </Grid>
     </hc:TransitioningContentControl>

@@ -307,7 +307,6 @@ namespace NiMotion.View
 
         private async void Button_StartUp_Click(object sender, RoutedEventArgs e)
         {
-            
             if (context.IsMotorOpen && context.MotorAddr > 0 && context.MotorAddr < 249)
             {
                 WriteValueToIni();
