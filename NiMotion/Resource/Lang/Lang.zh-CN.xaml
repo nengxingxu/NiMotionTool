@@ -68,12 +68,21 @@
     <system:String x:Key="AddScript">新增脚本</system:String>
     <system:String x:Key="DeleteScript">删除脚本</system:String>
     <system:String x:Key="ClearScriptList">清空脚本列表</system:String>
+    <system:String x:Key="ClearEnvironment">清空环境</system:String>
     <system:String x:Key="RunScript">执行脚本</system:String>
     <system:String x:Key="StopScript">停止脚本</system:String>
-    <system:String x:Key="Image2Video">图片转视频</system:String>
+    <system:String x:Key="PlayDLP">播放DLP</system:String>
 
     <system:String x:Key="ScriptName">脚本名称</system:String>
     <system:String x:Key="ScriptPath">脚本路径</system:String>
+
+    <system:String x:Key="FPS">帧率</system:String>
+    <system:String x:Key="FlushTime">刷新时间</system:String>
+    <system:String x:Key="LEDLight">光源</system:String>
+    <system:String x:Key="LED460Brightness">460亮度</system:String>
+    <system:String x:Key="LED385Brightness">385亮度</system:String>
+    
+    <system:String x:Key="Cycles">循环次数</system:String>
 
     <!--BottomBar-->
     <system:String x:Key="Mode">模式</system:String>

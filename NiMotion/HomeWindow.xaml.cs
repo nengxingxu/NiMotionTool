@@ -75,7 +75,8 @@ namespace NiMotion
             topBar.MotorMasterEvent += UpdateMotorMaster;
             systemSetting.UpdateLanguageEvent += UpdateLanguage;
             systemSetting.UpdateThemeEvent += UpdateTheme;
-
+            autoRunScript.MotorStartEvent += motorOperation.MotorStart;
+            autoRunScript.MotorStopEvent += motorOperation.MotorStop;
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

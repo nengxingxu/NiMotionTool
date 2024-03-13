@@ -69,8 +69,8 @@ namespace NiMotion.ViewModel
             }
         }
 
-        private string acceleration;
-        public string Acceleration
+        private double acceleration;
+        public double Acceleration
         {
             get { return acceleration; }
             set
@@ -80,8 +80,8 @@ namespace NiMotion.ViewModel
             }
         }
 
-        private string deceleration;
-        public string Deceleration
+        private double deceleration;
+        public double Deceleration
         {
             get { return deceleration; }
             set

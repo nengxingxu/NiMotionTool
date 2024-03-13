@@ -17,6 +17,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
+using System.Diagnostics;
+using System.Management;
+using Path = System.IO.Path;
 
 namespace NiMotion.View
 {
@@ -26,6 +29,7 @@ namespace NiMotion.View
     public partial class AutoRunScript
     {
         private string pyScriptPath = AppDomain.CurrentDomain.BaseDirectory + "runmat.py";
+        private string pyDLPScriptPath = AppDomain.CurrentDomain.BaseDirectory + "DLP.py";
         private List<string> matList = new List<string>();
         private CancellationTokenSource source = new CancellationTokenSource();
         private AutoRunScriptViewModel context = new AutoRunScriptViewModel();
@@ -35,6 +39,16 @@ namespace NiMotion.View
         private string matlabScriptPath = string.Empty;
         private bool isRunnigScript = false;
         private bool isCancleScript = false;
+        private System.Diagnostics.Process curProcess = null;
+
+        public delegate int MotorStart(double motorSpeed);
+        public delegate void MotorStop();
+
+        public event MotorStart MotorStartEvent;
+        public event MotorStop MotorStopEvent;
+
+
+
 
         public AutoRunScript()
         {
@@ -205,6 +219,40 @@ namespace NiMotion.View
 
         }
 
+        public async Task<int> ExecutePythonScriptC()
+        {
+            
+            Task<int> myTask = Task.Run(() =>
+            {
+                int ret = 0;
+                string pythonExePath = AppDomain.CurrentDomain.BaseDirectory + "python-3.9.8-embed-amd64\\python.exe";
+                string pythonArgs = pyScriptPath;
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                curProcess = process;
+                process.StartInfo.FileName = pythonExePath;
+                process.StartInfo.Arguments = pythonArgs;
+                process.StartInfo.UseShellExecute = false;          // 不使用操作系统的 shell 执行
+                process.StartInfo.RedirectStandardOutput = true;    // 重定向标准输出
+                process.StartInfo.RedirectStandardError = true;     // 重定错误输出
+                process.StartInfo.CreateNoWindow = true;            // 不创建新窗口
+                process.Start();
+                string error_output = process.StandardError.ReadToEnd();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                if (process.ExitCode == 0)
+                {
+                    ret = 0;
+                }
+                else
+                {
+                    ret = -1;
+                }
+                return ret;
+            });
+            int retValue = await myTask;
+            return retValue;
+        }
+
         public async Task<int> ExecutePythonScript()
         {
             Task<int> myTask = Task.Run(() =>
@@ -243,6 +291,86 @@ namespace NiMotion.View
             return retValue;
         }
 
+        public List<string> GetImageFiles(string imageDirectory)
+        {
+            try
+            {
+                return Directory.EnumerateFiles(imageDirectory)
+                    .Where(file => IsImageFile(file))
+                    .OrderBy(file => GetFileNumber(file))
+                    .ToList();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine($"Directory not found: {imageDirectory}");
+                return new List<string>();
+            }
+        }
+
+        private bool IsImageFile(string fileName)
+        {
+            string extension = Path.GetExtension(fileName).ToLower();
+            return extension == ".jpg" || extension == ".png" || extension == ".tiff" || extension == ".tif";
+        }
+
+        private int GetFileNumber(string fileName)
+        {
+            string nameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            string numericPart = new string(nameWithoutExtension.Where(char.IsDigit).ToArray());
+            if (int.TryParse(numericPart, out int number))
+            {
+                return number;
+            }
+            return 0;
+        }
+
+        private async Task<int> InnerExecuteDLP(string inputPath)
+        {
+            Task<int> task = Task.Run(() =>
+            {
+                string inputFilePath = inputPath + "\\David-DC\\SC-1";
+                return ExecuteDLP(inputFilePath);
+            });
+            int ret = await task;
+            return ret;
+        }
+
+        private int ExecuteDLP(string inputPath)
+        {
+            int retValue = 1;
+
+            List<string> listImage = GetImageFiles(inputPath);
+
+            double speed = 360 / (listImage.Count / Convert.ToDouble(context.FPS));  //motor speed
+            string pythonExePath = AppDomain.CurrentDomain.BaseDirectory + "python-3.9.8-embed-amd64\\python.exe";
+            string pythonArgs = pyDLPScriptPath + " " + context.Cycles + " " + context.FPS + " " + context.FlushTime + " " + context.LED460Brightness + " "+ context.LED385Brightness + " " + context.SelectedIndex.ToString() + " " + inputPath;
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            curProcess = process;
+            process.StartInfo.FileName = pythonExePath;
+            process.StartInfo.Arguments = pythonArgs;
+            process.StartInfo.UseShellExecute = true;          // 不使用操作系统的 shell 执行
+            process.StartInfo.RedirectStandardOutput = false;    // 重定向标准输出
+            process.StartInfo.RedirectStandardError = false;     // 重定错误输出
+            process.StartInfo.CreateNoWindow = true;            // 不创建新窗口
+            try
+            {
+                if (MotorStartEvent(speed) == 1)
+                    process.Start();
+                else
+                    MessageBox.Show("Motor Start Failed");
+            }
+            catch (Exception ex)
+            {
+                retValue = 1;
+                MotorStopEvent();
+            }
+            //string error_output = process.StandardError.ReadToEnd();
+            //string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+            MotorStopEvent();
+            return retValue;
+        }
+
         private async Task<int> InnerExecuteFFmpeg(string inputPath)
         {
             Task<int> task = Task.Run(() =>
@@ -272,6 +400,7 @@ namespace NiMotion.View
             }
             string ffmpegArgs = $"-framerate 30 -i \"{inputFilePath}\" -y -c:v libvpx-vp9 -r 30 -pix_fmt yuv420p -vf pad=\"width = iw:height = ih + 1:x = 0:y = 0:color = white\" \"{outputVideo}\"";
             System.Diagnostics.Process process = new System.Diagnostics.Process();
+            curProcess = process;
             process.StartInfo.FileName = ffmpegPath;
             process.StartInfo.Arguments = ffmpegArgs;
             process.StartInfo.UseShellExecute = false;          // 不使用操作系统的 shell 执行
@@ -345,6 +474,47 @@ namespace NiMotion.View
         }
 
 
+        private void ClearPythonEnv()
+        {
+            string pythonExePath = AppDomain.CurrentDomain.BaseDirectory + "python-3.9.8-embed-amd64\\python.exe";
+            string pythonArgs = "-m pip uninstall matlabengine -y";
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            curProcess = process;
+            process.StartInfo.FileName = pythonExePath;
+            process.StartInfo.Arguments = pythonArgs;
+            process.StartInfo.UseShellExecute = false;          // 不使用操作系统的 shell 执行
+            process.StartInfo.RedirectStandardOutput = true;    // 重定向标准输出
+            process.StartInfo.RedirectStandardError = true;     // 重定错误输出
+            process.StartInfo.CreateNoWindow = true;            // 不创建新窗口
+
+
+            try
+            {
+                process.Start();
+                string error_output = process.StandardError.ReadToEnd();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    MessageBox.Show("pip uninstall fail :" + error_output);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void Button_ClearPythonEnvClick(object sender, RoutedEventArgs e)
+        {
+            Task task = Task.Run(() =>
+            {
+                ClearPythonEnv();
+            });
+            await task;
+        }
+
         private async void Button_RunScript_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -371,7 +541,7 @@ namespace NiMotion.View
                     ret = await ExecutePythonScript();
                     if (0 != ret || isCancleScript) break;
                     stepBar.Next();
-                    ret = await InnerExecuteFFmpeg(matlabScriptPath);
+                    ret = await InnerExecuteDLP(matlabScriptPath);
                     if (0 != ret || isCancleScript) break;
                     stepBar.Next();
                 } while (false);
@@ -384,13 +554,42 @@ namespace NiMotion.View
             BtnRunScript.IsEnabled = true;
         }
 
+        static void TerminateChildren(int processId)
+        {
+            // 获取指定进程的子进程
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(
+                $"Select * From Win32_Process Where ParentProcessID={processId}");
+            ManagementObjectCollection moc = searcher.Get();
+
+            // 终止子进程
+            foreach (ManagementObject mo in moc)
+            {
+                int childProcessId = Convert.ToInt32(mo["ProcessID"]);
+                TerminateChildren(childProcessId);
+            }
+
+            if (processId == Process.GetCurrentProcess().Id)
+                return;
+
+            // 终止当前进程
+            try
+            {
+                Process process = Process.GetProcessById(processId);
+                process.Kill();
+            }
+            catch (ArgumentException) { }
+        }
+
         private void Button_StopScript_Click(object sender, RoutedEventArgs e)
         {
             isCancleScript = true;
-            using (Py.GIL())
-            {
-                PythonEngine.Interrupt(pythonThreadID);
-            }
+            Process process = Process.GetCurrentProcess();
+            TerminateChildren(process.Id);
+            //using (Py.GIL())
+            //{
+            //    PythonEngine.Interrupt(pythonThreadID);
+                
+            //}
         }
 
         private async void Button_Image2Video_Click(object sender, RoutedEventArgs e)
@@ -405,7 +604,7 @@ namespace NiMotion.View
                 string folderName = dialog.SelectedPath;
                 Task task = Task.Run(() =>
                 {
-                    ExecuteFFmpeg(folderName);
+                    ExecuteDLP(folderName);
                 });
                 await task;
             }

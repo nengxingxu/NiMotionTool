@@ -19,6 +19,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" >
                 <Grid.ColumnDefinitions>
@@ -54,7 +55,7 @@
                     </Border>
                     <Border Margin="5" Grid.Row="2">
                         <Button Name="BtnClearScriptList" Width ="100" Content="{DynamicResource ClearScriptList}" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
-                     VerticalAlignment="Center" Click="Button_ClearScriptList_Click"/>
+                     VerticalAlignment="Bottom" Click="Button_ClearScriptList_Click" Margin="0,0,-0.571,0.429"/>
                     </Border>
                 </Grid>
                 <Border Margin="5" Grid.Column="1">
@@ -69,6 +70,22 @@
                 </Border>
             </Grid>
             <Grid Grid.Row="2" >
+                <UniformGrid Grid.Row="1" Rows="1" Columns="7">
+                    <TextBox Margin="12,10,0,10" Text="{Binding Cycles}" hc:InfoElement.Placeholder="2" Padding="5"  hc:InfoElement.Title="{DynamicResource Cycles}" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+                    <TextBox Margin="12,10,0,10" Text="{Binding FPS}" hc:InfoElement.Placeholder="60" Padding="5"  hc:InfoElement.Title="{DynamicResource FPS}" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+                    <TextBox Margin="12,10,0,10" Text="{Binding FlushTime}" hc:InfoElement.Placeholder="5" Padding="5"  hc:InfoElement.Title="{DynamicResource FlushTime}" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+                    <TextBox Margin="12,10,0,10" Text="{Binding LED460Brightness}" hc:InfoElement.Placeholder="50" Padding="5"  hc:InfoElement.Title="{DynamicResource LED460Brightness}" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+                    <TextBox Margin="12,10,0,10" Text="{Binding LED385Brightness}" hc:InfoElement.Placeholder="50" Padding="5"  hc:InfoElement.Title="{DynamicResource LED385Brightness}" Style="{StaticResource TextBoxExtend}" 
+                         hc:InfoElement.Necessary="True" />
+                    <ComboBox Name="CmbLED" Margin="9.5,10,-25,10" SelectedIndex="{Binding SelectedIndex}" ItemsSource="{Binding LEDList}" hc:InfoElement.Title="{DynamicResource LEDLight}" Style="{StaticResource ComboBoxExtend}"/>
+      
+                </UniformGrid>
+            </Grid>
+            <Grid Grid.Row="3" >
                 <hc:StepBar Name="stepBar" Width="800" Margin="-50, 10, 10, 10" Grid.Column="5" Grid.Row="1" Grid.ColumnSpan="1" ItemsSource="{Binding StepDataList}" Dock="Top">
                     <hc:StepBar.ItemTemplate>
                         <DataTemplate>
@@ -79,23 +96,32 @@
                     </hc:StepBar.ItemTemplate>
                 </hc:StepBar>
             </Grid>
-            <UniformGrid Grid.Row="3" Rows="1" Columns="7" >
-                <Border Margin="5">
+            <Grid Grid.Row="4" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Border Margin="5" Grid.Column="0">
+                    <Button Name="BtnClearEnv" Width ="120" Content="{DynamicResource ClearEnvironment}" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                     VerticalAlignment="Center" Click="Button_ClearPythonEnvClick"/>
+                </Border>
+                <Border Margin="5" Grid.Column="1">
                     <Button Name="BtnRunScript" Width ="100" Content="{DynamicResource RunScript}" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Center" Click="Button_RunScript_Click"/>
                 </Border>
-                <Border Margin="5">
+                <Border Margin="5" Grid.Column="2">
                     <Button Name="BtnStopScript" Width ="100" Content="{DynamicResource StopScript}" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Center" Click="Button_StopScript_Click"/>
                 </Border>
-            </UniformGrid>
-            <Grid Grid.Row="4">
+            </Grid>
+            <Grid Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Border Margin="5" Grid.Column="0">
-                    <Button Name="BtnConvertToVideo" Width ="100" Content="{DynamicResource Image2Video}" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
+                    <Button Name="BtnConvertToVideo" Width ="100" Content="{DynamicResource PlayDLP}" Padding="1" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="5"
                      VerticalAlignment="Center" Click="Button_Image2Video_Click"/>
                 </Border>
                 <Border Margin="5" Grid.Column="1">

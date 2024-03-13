@@ -24,24 +24,24 @@ namespace NiMotion.Model
             }
         }
 
-        private uint minSpeed;
-        [Category("Speed/Acceleration")]
-        public uint MinSpeed
-        {
-            get
-            {
-                return minSpeed;
-            }
-            set
-            {
-                minSpeed = value;
-                RaisePropertyChanged("MinSpeed");
-            }
-        }
+        //private uint minSpeed;
+        //[Category("Speed/Acceleration")]
+        //public uint MinSpeed
+        //{
+        //    get
+        //    {
+        //        return minSpeed;
+        //    }
+        //    set
+        //    {
+        //        minSpeed = value;
+        //        RaisePropertyChanged("MinSpeed");
+        //    }
+        //}
 
-        private uint acceleration;
+        private double acceleration;
         [Category("Speed/Acceleration")]
-        public uint Acceleration
+        public double Acceleration
         {
             get
             {
@@ -54,9 +54,9 @@ namespace NiMotion.Model
             }
         }
 
-        private uint deceleration;
+        private double deceleration;
         [Category("Speed/Acceleration")]
-        public uint Deceleration
+        public double Deceleration
         {
             get
             {

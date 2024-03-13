@@ -143,16 +143,16 @@ namespace NiMotion.View
                     try
                     {
                         int ret = NimServoSDK.Nim_load_params(hMaster, motorAddr, "BLMxx_modbus_zh.db");
-                        if (0 != ret) throw new Exception("Nim_load_params Failed");
+                        if (0 != ret) throw new Exception("Nim_load_params Failed1");
 
-                        // 读取电机PDO配置
+                        //读取电机PDO配置
                         ret = NimServoSDK.Nim_read_PDOConfig(hMaster, motorAddr);
-                        if (0 != ret) throw new Exception("Nim_load_params Failed");
+                        if (0 != ret) throw new Exception(string.Format("Nim_load_params Failed2 {0}", ret));
 
                         ret = NimServoSDK.Nim_set_unitsFactor(hMaster, motorAddr, 1);
-                        if (0 != ret) throw new Exception("Nim_set_unitsFactor Failed");
+                        if (0 != ret) throw new Exception("Nim_set_unitsFactor Failed3");
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
                     }

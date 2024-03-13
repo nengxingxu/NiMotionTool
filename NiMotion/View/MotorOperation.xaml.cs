@@ -93,6 +93,12 @@ namespace NiMotion.View
             return readValue;
         }
 
+        public string ReadMotorParamFromIni(string Param, string def)
+        {
+            string readValue = IniFileHelper.IniValue("MotorParam", Param, def);
+            return readValue;
+        }
+
         public void WriteToIni(string Param, string Value)
         {
             IniFileHelper.WriteValue(Section, Param, Value);
@@ -105,6 +111,9 @@ namespace NiMotion.View
             context.Hour = Convert.ToInt32(ReadFromIni("TimerHour", "0"));
             context.Min = Convert.ToInt32(ReadFromIni("TimerMin", "0"));
             context.Sec = Convert.ToInt32(ReadFromIni("TimerSec", "0"));
+            context.Acceleration = Convert.ToDouble(ReadMotorParamFromIni("Acceleration", "100"));
+            context.Deceleration = Convert.ToDouble(ReadMotorParamFromIni("Deceleration", "100"));
+
             if (ReadFromIni("Rotation", "Forward") == "Forward")
             {
                 RBForward.IsChecked = true;
@@ -170,8 +179,15 @@ namespace NiMotion.View
                 ret = NimServoSDK.Nim_power_on(context.MotorMaster, context.MotorAddr, 1);
                 if (0 != ret) throw new Exception(string.Format("Call Nim_power_on Failed [{0}]", ret));
 
-                ret = NimServoSDK.Nim_set_profileAccel(context.MotorMaster, context.MotorAddr, 10000);
-                ret = NimServoSDK.Nim_set_profileDecel(context.MotorMaster, context.MotorAddr, 10000);
+
+                double degreesAcceleration = context.Acceleration * 10000.0 * 10 / 360;
+                ret = NimServoSDK.Nim_set_profileAccel(context.MotorMaster, context.MotorAddr, context.Acceleration);
+                if (0 != ret) throw new Exception(string.Format("Call Nim_set_profileAccel Failed [{0}]", ret));
+
+                double degreesDeceleration = context.Deceleration * 10000.0 * 10 / 360;
+                ret = NimServoSDK.Nim_set_profileDecel(context.MotorMaster, context.MotorAddr, context.Deceleration);
+                if (0 != ret) throw new Exception(string.Format("Call Nim_set_profileDecel Failed [{0}]", ret));
+
                 double speed = ConvertToStepSpeed(context.MotorSpeed);
                 if ((bool)RBForward.IsChecked)
                     ret = NimServoSDK.Nim_forward(context.MotorMaster, context.MotorAddr, speed, 1);
@@ -310,6 +326,8 @@ namespace NiMotion.View
             if (context.IsMotorOpen && context.MotorAddr > 0 && context.MotorAddr < 249)
             {
                 WriteValueToIni();
+                context.Acceleration = Convert.ToDouble(ReadMotorParamFromIni("Acceleration", "100"));
+                context.Deceleration = Convert.ToDouble(ReadMotorParamFromIni("Deceleration", "100"));
                 if (!IsStop)
                 {
                     HandyControl.Controls.MessageBox.Show((string)FindResource("msg1"));
@@ -318,9 +336,9 @@ namespace NiMotion.View
                 if ((bool)RBSpeed.IsChecked)
                 {
                     RunSpeedMode();
+                    IsStop = false;
                     if (context.IsShowTimer)
                     {
-                        IsStop = false;
                         await Task.Run(() =>
                         {
                             long startTime = 0;
@@ -365,7 +383,7 @@ namespace NiMotion.View
                                     IsStop = true;
                                     return;
                                 }
-                            }                                
+                            }
                         });
                     }
                 }
@@ -449,6 +467,34 @@ namespace NiMotion.View
                     HandyControl.Controls.MessageBox.Show((string)FindResource("msg3"));
                 }
             }
+        }
+
+        public int MotorStart(double motorSpeed)
+        {
+            try
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    context.MotorSpeed = motorSpeed;
+                    Button_StartUp_Click(null, null);
+                    return IsStop ? 0 : 1;
+                });
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return IsStop ? 0 : 1;
+
+        }
+
+        public void MotorStop()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Button_Stop_Click(null, null);
+            });
         }
 
         private void ToggleButton_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)

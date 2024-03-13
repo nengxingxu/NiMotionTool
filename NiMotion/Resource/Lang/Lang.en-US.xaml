@@ -71,12 +71,20 @@
     <system:String x:Key="AddScript">AddScript</system:String>
     <system:String x:Key="DeleteScript">DeleteScript</system:String>
     <system:String x:Key="ClearScriptList">ClearScriptList</system:String>
+
+    <system:String x:Key="ClearEnvironment">ClearEnvironment</system:String>
     <system:String x:Key="RunScript">RunScript</system:String>
     <system:String x:Key="StopScript">StopScript</system:String>
-    <system:String x:Key="Image2Video">Image2Video</system:String>
+    <system:String x:Key="PlayDLP">PlayDLP</system:String>
 
     <system:String x:Key="ScriptName">ScriptName</system:String>
     <system:String x:Key="ScriptPath">ScriptPath</system:String>
+    <system:String x:Key="FPS">FPS</system:String>
+    <system:String x:Key="FlushTime">FlushTime</system:String>
+    <system:String x:Key="LEDLight">Light</system:String>
+    <system:String x:Key="Cycles">Cycles</system:String>
+    <system:String x:Key="LED460Brightness">460Brightness</system:String>
+    <system:String x:Key="LED385Brightness">385Brightness</system:String>
 
 
     <!--BottomBar-->

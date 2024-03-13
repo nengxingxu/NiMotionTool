@@ -48,6 +48,18 @@ namespace NiMotion.ViewModel
             stepDataList = GetStepBarDataList();
             matDataPath = string.Empty;
             matlabRootPath = string.Empty;
+            LEDList = new ObservableCollection<string>
+            {
+                "LED460",
+                "LED385",
+                "LED460and385"
+            };
+            SelectedIndex = 0;
+            Cycles = "2";
+            FPS = "60";
+            FlushTime = "5";
+            LED460Brightness = "50";
+            LED385Brightness = "50";
         }
 
         public void AddListDataItem(string matscript_name, string matscript_path)
@@ -76,7 +88,80 @@ namespace NiMotion.ViewModel
             return dataList[index];
         }
 
+        private string cycles;
+        public string Cycles
+        {
+            get { return cycles; }
+            set
+            {
+                cycles = value;
+                RaisePropertyChanged("Cycles");
+            }
+        }
 
+        private string fps;
+        public string FPS
+        {
+            get { return fps; }
+            set
+            {
+                fps = value;
+                RaisePropertyChanged("FPS");
+            }
+        }
+
+        private string led460Brightness;
+        public string LED460Brightness
+        {
+            get { return led460Brightness; }
+            set
+            {
+                led460Brightness = value;
+                RaisePropertyChanged("LED460Brightness");
+            }
+        }
+
+        private string led4385Brightness;
+        public string LED385Brightness
+        {
+            get { return led4385Brightness; }
+            set
+            {
+                led4385Brightness = value;
+                RaisePropertyChanged("LED385Brightness");
+            }
+        }
+
+
+        private string flushTime;
+        public string FlushTime
+        {
+            get { return flushTime; }
+            set
+            {
+                flushTime = value;
+                RaisePropertyChanged("FlushTime");
+            }
+        }
+
+        private ObservableCollection<string> ledList;
+        public ObservableCollection<string> LEDList
+        {
+            get => ledList;
+            set => Set(ref ledList, value);
+        }
+
+
+        private int selectedIndex;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                selectedIndex = value;
+                RaisePropertyChanged("SelectedIndex");
+            }
+        }
 
         private ObservableCollection<StepDataModel> GetStepBarDataList()
         {
@@ -100,7 +185,7 @@ namespace NiMotion.ViewModel
                 },
                 new StepDataModel
                 {
-                    Name = "CompositeVideo"
+                    Name = "DLP"
                 },
                 new StepDataModel
                 {
@@ -108,6 +193,7 @@ namespace NiMotion.ViewModel
                 }
             };
         }
+
 
 
         private ObservableCollection<ListDataModel> GetDataList()

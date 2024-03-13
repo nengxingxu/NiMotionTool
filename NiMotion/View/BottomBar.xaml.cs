@@ -82,7 +82,7 @@ namespace NiMotion.View
                 if (0 == ret)
                 {
                     // convert rpm to rad/s
-                    double rads = doValue * 360 / 60 / 10;
+                    double rads = doValue * 360 / 10000 / 10;
                     context.Acceleration = string.Format("{0}: {1} rad/s2", FindResource("Acceleration"), doValue);
                 }
                 else
@@ -94,7 +94,7 @@ namespace NiMotion.View
                 if (0 == ret)
                 {
                     // convert rpm to rad/s
-                    double rads = doValue * 360 / 60 / 10;
+                    double rads = doValue * 360 / 10000 / 10;
                     context.Deceleration = string.Format("{0}: {1} rad/s2", FindResource("Deceleration"), doValue);
                 }
                 else
